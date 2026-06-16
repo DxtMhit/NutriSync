@@ -125,7 +125,7 @@ const SymptomChatbot = () => {
               background: 'var(--surface2)',
               display: 'flex',
               alignItems: 'center',
-              justify-content: 'space-between'
+              justifyContent: 'space-between'
             }}
           >
             <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
