@@ -1,0 +1,4043 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>NutriSync — Vitamin & Mineral Codependencies</title>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,wght@0,300;0,400;0,600;0,900;1,300;1,600&family=DM+Mono:wght@300;400;500&family=Instrument+Sans:wght@400;500;600&display=swap" rel="stylesheet" />
+<style>
+  :root {
+    --bg: #080c0a;
+    --surface: #0f1612;
+    --surface2: #141d18;
+    --border: #1e2d24;
+    --border2: #253320;
+    --accent: #5dca7e;
+    --accent2: #a8e6bb;
+    --accent3: #2d6e45;
+    --gold: #d4a843;
+    --gold2: #f0cc70;
+    --amber: #e07b2a;
+    --blue: #4a90d9;
+    --blue2: #7fb3e8;
+    --rose: #d45d5d;
+    --rose2: #e89090;
+    --purple: #8b5cf6;
+    --purple2: #b48af8;
+    --teal: #2dd4bf;
+    --teal2: #7ee8dc;
+    --text: #d4e0d8;
+    --text2: #8fa898;
+    --text3: #556b5e;
+    --heading: #eaf3ed;
+    --tag-bg: #1a2820;
+  }
+
+
+  /* ===== LIGHT MODE ===== */
+  html.light {
+    --bg: #f2f6f3;
+    --surface: #ffffff;
+    --surface2: #e8f0eb;
+    --border: #cddbd2;
+    --border2: #b4cebb;
+    --accent: #237a40;
+    --accent2: #1a5e30;
+    --accent3: #c4e8d0;
+    --gold: #9a6e10;
+    --gold2: #7a5200;
+    --amber: #bc5e0e;
+    --blue: #1e5eaa;
+    --blue2: #164880;
+    --rose: #aa2e2e;
+    --rose2: #861a1a;
+    --purple: #5828b8;
+    --purple2: #421898;
+    --teal: #167870;
+    --teal2: #0a5c55;
+    --text: #12201a;
+    --text2: #2e4e3a;
+    --text3: #5a7a64;
+    --heading: #08140e;
+    --tag-bg: #e2ede7;
+  }
+  html.light body::before { display: none; }
+  html.light nav { background: rgba(242,246,243,0.96); }
+  html.light .cluster-card,
+  html.light .vitamin-card,
+  html.light .chain-card,
+  html.light .tip-card,
+  html.light .ind-test-card,
+  html.light .pkg-card,
+  html.light .proto-card { box-shadow: 0 1px 4px rgba(0,0,0,0.07); }
+
+
+
+  /* ===== DARK/LIGHT TOGGLE ===== */
+  .theme-toggle {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-left: 16px;
+    flex-shrink: 0;
+    cursor: pointer;
+    padding: 6px 12px;
+    border-radius: 20px;
+    border: 1px solid var(--border2);
+    background: var(--surface);
+    transition: all 0.2s;
+    color: var(--text2);
+    font-family: 'DM Mono', monospace;
+    font-size: 11px;
+    user-select: none;
+  }
+  .theme-toggle:hover { border-color: var(--accent); color: var(--accent); }
+  .theme-icon { font-size: 14px; }
+
+  /* ===== BOOKMARKS ===== */
+  .bookmark-btn {
+    position: absolute;
+    top: 14px;
+    right: 14px;
+    width: 28px;
+    height: 28px;
+    border-radius: 6px;
+    border: 1px solid var(--border);
+    background: var(--surface2);
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 13px;
+    transition: all 0.2s;
+    z-index: 2;
+    color: var(--text3);
+  }
+  .bookmark-btn:hover { border-color: var(--gold); color: var(--gold); }
+  .bookmark-btn.bookmarked { background: rgba(212,168,67,0.12); border-color: rgba(212,168,67,0.4); color: var(--gold2); }
+  .cluster-card, .vitamin-card, .chain-card, .tip-card { position: relative; }
+
+  .bookmarks-bar {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    z-index: 200;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    gap: 8px;
+  }
+  .bookmarks-fab {
+    width: 48px;
+    height: 48px;
+    border-radius: 50%;
+    background: var(--accent);
+    border: none;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 18px;
+    box-shadow: 0 4px 16px rgba(0,0,0,0.3);
+    transition: all 0.2s;
+    color: #fff;
+    position: relative;
+  }
+  .bookmarks-fab:hover { transform: scale(1.08); }
+  .bookmarks-fab .fab-count {
+    position: absolute;
+    top: -4px;
+    right: -4px;
+    width: 18px;
+    height: 18px;
+    border-radius: 50%;
+    background: var(--gold);
+    color: #000;
+    font-family: 'DM Mono', monospace;
+    font-size: 10px;
+    font-weight: 700;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    display: none;
+  }
+  .bookmarks-panel {
+    background: var(--surface);
+    border: 1px solid var(--border2);
+    border-radius: 16px;
+    width: 300px;
+    max-height: 400px;
+    overflow-y: auto;
+    box-shadow: 0 8px 32px rgba(0,0,0,0.3);
+    display: none;
+    flex-direction: column;
+  }
+  .bookmarks-panel.open { display: flex; }
+  .bookmarks-panel-header {
+    padding: 16px 18px 12px;
+    border-bottom: 1px solid var(--border);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+  .bookmarks-panel-title {
+    font-family: 'Fraunces', serif;
+    font-size: 16px;
+    font-weight: 700;
+    color: var(--heading);
+  }
+  .bookmarks-clear {
+    font-family: 'DM Mono', monospace;
+    font-size: 10px;
+    color: var(--rose);
+    cursor: pointer;
+    padding: 3px 8px;
+    border-radius: 4px;
+    border: 1px solid rgba(212,93,93,0.2);
+    background: none;
+  }
+  .bookmarks-list { padding: 8px; }
+  .bookmark-item {
+    padding: 10px 12px;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background 0.15s;
+    display: flex;
+    align-items: flex-start;
+    gap: 8px;
+  }
+  .bookmark-item:hover { background: var(--surface2); }
+  .bookmark-item-icon { font-size: 14px; flex-shrink: 0; margin-top: 1px; }
+  .bookmark-item-text { font-size: 13px; color: var(--text2); line-height: 1.4; }
+  .bookmark-item-section {
+    font-family: 'DM Mono', monospace;
+    font-size: 10px;
+    color: var(--text3);
+    margin-top: 2px;
+  }
+  .bookmarks-empty {
+    padding: 24px;
+    text-align: center;
+    font-size: 13px;
+    color: var(--text3);
+  }
+
+  /* ===== COLLAPSIBLE CLUSTER CARDS ===== */
+  .cluster-toggle {
+    width: 28px;
+    height: 28px;
+    border-radius: 6px;
+    border: 1px solid var(--border);
+    background: var(--surface2);
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 12px;
+    transition: all 0.2s;
+    color: var(--text3);
+    flex-shrink: 0;
+    margin-left: auto;
+  }
+  .cluster-toggle:hover { border-color: var(--accent); color: var(--accent); }
+  .cluster-toggle.collapsed { transform: rotate(-90deg); }
+  .cluster-collapsible {
+    overflow: hidden;
+    transition: max-height 0.35s ease, opacity 0.3s ease;
+    max-height: 2000px;
+    opacity: 1;
+  }
+  .cluster-collapsible.collapsed {
+    max-height: 0;
+    opacity: 0;
+  }
+  .cluster-summary {
+    padding: 10px 24px 14px;
+    font-size: 12.5px;
+    color: var(--text3);
+    display: none;
+    font-style: italic;
+  }
+  .cluster-collapsible.collapsed + .cluster-summary { display: block; }
+
+  /* ===== CITATIONS PANEL ===== */
+  .citations-fab {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    background: var(--surface2);
+    border: 1px solid var(--border2);
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 16px;
+    color: var(--text2);
+    transition: all 0.2s;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+  }
+  .citations-fab:hover { border-color: var(--accent); color: var(--accent); }
+
+  .citations-modal-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.6);
+    z-index: 500;
+    display: none;
+    align-items: flex-end;
+    justify-content: center;
+    padding: 20px;
+  }
+  .citations-modal-overlay.open { display: flex; }
+  .citations-modal {
+    background: var(--surface);
+    border: 1px solid var(--border2);
+    border-radius: 20px 20px 16px 16px;
+    width: 100%;
+    max-width: 760px;
+    max-height: 80vh;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    animation: slideUp 0.3s ease;
+  }
+  @keyframes slideUp {
+    from { transform: translateY(40px); opacity: 0; }
+    to { transform: translateY(0); opacity: 1; }
+  }
+  .citations-modal-header {
+    padding: 20px 24px 16px;
+    border-bottom: 1px solid var(--border);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-shrink: 0;
+  }
+  .citations-modal-title {
+    font-family: 'Fraunces', serif;
+    font-size: 22px;
+    font-weight: 700;
+    color: var(--heading);
+    letter-spacing: -0.5px;
+  }
+  .citations-modal-close {
+    width: 32px;
+    height: 32px;
+    border-radius: 8px;
+    border: 1px solid var(--border);
+    background: var(--surface2);
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 16px;
+    color: var(--text2);
+    transition: all 0.2s;
+  }
+  .citations-modal-close:hover { border-color: var(--rose); color: var(--rose); }
+  .citations-modal-body {
+    overflow-y: auto;
+    padding: 16px 24px 24px;
+    flex: 1;
+  }
+  .cite-category {
+    margin-bottom: 24px;
+  }
+  .cite-category-title {
+    font-family: 'DM Mono', monospace;
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 1.5px;
+    color: var(--accent);
+    margin-bottom: 12px;
+    padding-bottom: 8px;
+    border-bottom: 1px solid var(--border);
+  }
+  .cite-item {
+    display: flex;
+    gap: 12px;
+    align-items: flex-start;
+    margin-bottom: 10px;
+    padding: 12px 14px;
+    background: var(--surface2);
+    border-radius: 10px;
+    border: 1px solid var(--border);
+    transition: border-color 0.2s;
+  }
+  .cite-item:hover { border-color: var(--border2); }
+  .cite-number {
+    font-family: 'DM Mono', monospace;
+    font-size: 11px;
+    color: var(--accent);
+    flex-shrink: 0;
+    width: 24px;
+    padding-top: 2px;
+  }
+  .cite-content { flex: 1; }
+  .cite-claim {
+    font-size: 13.5px;
+    color: var(--text);
+    margin-bottom: 5px;
+    line-height: 1.5;
+    font-weight: 500;
+  }
+  .cite-ref {
+    font-size: 12px;
+    color: var(--text3);
+    line-height: 1.5;
+    margin-bottom: 4px;
+  }
+  .cite-link {
+    font-family: 'DM Mono', monospace;
+    font-size: 11px;
+    color: var(--blue2);
+    text-decoration: none;
+    padding: 2px 8px;
+    border-radius: 4px;
+    border: 1px solid rgba(74,144,217,0.2);
+    background: rgba(74,144,217,0.06);
+    display: inline-block;
+    margin-top: 2px;
+    transition: all 0.15s;
+  }
+  .cite-link:hover { color: var(--blue); border-color: rgba(74,144,217,0.4); }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'Instrument Sans', sans-serif;
+    font-size: 15px;
+    line-height: 1.7;
+    min-height: 100vh;
+    overflow-x: hidden;
+  }
+
+  /* BACKGROUND TEXTURE */
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background:
+      radial-gradient(ellipse 80% 60% at 20% 10%, rgba(93,202,126,0.04) 0%, transparent 60%),
+      radial-gradient(ellipse 60% 80% at 80% 90%, rgba(74,144,217,0.03) 0%, transparent 60%),
+      radial-gradient(ellipse 40% 40% at 50% 50%, rgba(212,168,67,0.02) 0%, transparent 70%);
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  /* NAV */
+  nav {
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    background: rgba(8,12,10,0.9);
+    backdrop-filter: blur(20px);
+    border-bottom: 1px solid var(--border);
+    padding: 0 32px;
+    display: flex;
+    align-items: center;
+    gap: 0;
+    height: 60px;
+  }
+
+  .nav-brand {
+    font-family: 'Fraunces', serif;
+    font-size: 18px;
+    font-weight: 900;
+    color: var(--accent);
+    letter-spacing: -0.5px;
+    margin-right: 40px;
+    text-decoration: none;
+  }
+
+  .nav-brand span { color: var(--text3); font-weight: 300; font-style: italic; }
+
+  .nav-tabs {
+    display: flex;
+    gap: 0;
+    overflow-x: auto;
+    flex: 1;
+    scrollbar-width: none;
+  }
+
+  .nav-tabs::-webkit-scrollbar { display: none; }
+
+  .nav-tab {
+    font-family: 'DM Mono', monospace;
+    font-size: 11px;
+    font-weight: 400;
+    color: var(--text3);
+    padding: 0 16px;
+    height: 60px;
+    display: flex;
+    align-items: center;
+    cursor: pointer;
+    border-bottom: 2px solid transparent;
+    white-space: nowrap;
+    transition: all 0.2s;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+  }
+
+  .nav-tab:hover { color: var(--text2); }
+  .nav-tab.active { color: var(--accent); border-bottom-color: var(--accent); }
+
+  /* MAIN LAYOUT */
+  .main { position: relative; z-index: 1; }
+
+  /* HERO */
+  .hero {
+    padding: 80px 64px 60px;
+    max-width: 1400px;
+    margin: 0 auto;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .hero-eyebrow {
+    font-family: 'DM Mono', monospace;
+    font-size: 11px;
+    color: var(--accent);
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    margin-bottom: 20px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+
+  .hero-eyebrow::before {
+    content: '';
+    display: inline-block;
+    width: 32px;
+    height: 1px;
+    background: var(--accent);
+  }
+
+  .hero h1 {
+    font-family: 'Fraunces', serif;
+    font-size: clamp(42px, 6vw, 80px);
+    font-weight: 900;
+    line-height: 1.0;
+    color: var(--heading);
+    letter-spacing: -2px;
+    margin-bottom: 24px;
+    max-width: 800px;
+  }
+
+  .hero h1 em {
+    font-style: italic;
+    color: var(--accent);
+  }
+
+  .hero-desc {
+    max-width: 620px;
+    color: var(--text2);
+    font-size: 16px;
+    line-height: 1.8;
+    margin-bottom: 36px;
+  }
+
+  .hero-stats {
+    display: flex;
+    gap: 40px;
+    flex-wrap: wrap;
+  }
+
+  .hero-stat {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+  }
+
+  .hero-stat-num {
+    font-family: 'Fraunces', serif;
+    font-size: 32px;
+    font-weight: 900;
+    color: var(--heading);
+    line-height: 1;
+  }
+
+  .hero-stat-label {
+    font-family: 'DM Mono', monospace;
+    font-size: 10px;
+    color: var(--text3);
+    text-transform: uppercase;
+    letter-spacing: 1px;
+  }
+
+  /* SECTIONS */
+  .section { display: none; }
+  .section.active { display: block; }
+
+  .section-inner {
+    max-width: 1400px;
+    margin: 0 auto;
+    padding: 48px 64px;
+  }
+
+  /* SECTION HEADER */
+  .section-header {
+    margin-bottom: 40px;
+    padding-bottom: 24px;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .section-header h2 {
+    font-family: 'Fraunces', serif;
+    font-size: 36px;
+    font-weight: 700;
+    color: var(--heading);
+    letter-spacing: -1px;
+    margin-bottom: 8px;
+  }
+
+  .section-header p {
+    color: var(--text2);
+    max-width: 640px;
+  }
+
+  /* CLUSTER CARDS */
+  .clusters-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(420px, 1fr));
+    gap: 24px;
+  }
+
+  .cluster-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    overflow: hidden;
+    transition: border-color 0.3s, transform 0.2s;
+    cursor: pointer;
+  }
+
+  .cluster-card:hover {
+    border-color: var(--border2);
+    transform: translateY(-2px);
+  }
+
+  .cluster-header {
+    padding: 24px 24px 16px;
+    display: flex;
+    align-items: flex-start;
+    gap: 16px;
+  }
+
+  .cluster-icon {
+    width: 48px;
+    height: 48px;
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 22px;
+    flex-shrink: 0;
+  }
+
+  .cluster-meta { flex: 1; }
+
+  .cluster-name {
+    font-family: 'Fraunces', serif;
+    font-size: 20px;
+    font-weight: 700;
+    color: var(--heading);
+    letter-spacing: -0.5px;
+    margin-bottom: 4px;
+  }
+
+  .cluster-tagline {
+    font-family: 'DM Mono', monospace;
+    font-size: 11px;
+    color: var(--text3);
+    letter-spacing: 0.5px;
+  }
+
+  .cluster-members {
+    padding: 0 24px 16px;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+  }
+
+  .member-tag {
+    font-family: 'DM Mono', monospace;
+    font-size: 11px;
+    padding: 4px 10px;
+    border-radius: 6px;
+    border: 1px solid;
+    letter-spacing: 0.3px;
+  }
+
+  .cluster-body {
+    padding: 16px 24px;
+    border-top: 1px solid var(--border);
+  }
+
+  .dep-item {
+    display: flex;
+    gap: 12px;
+    margin-bottom: 12px;
+    align-items: flex-start;
+  }
+
+  .dep-item:last-child { margin-bottom: 0; }
+
+  .dep-arrow {
+    font-family: 'DM Mono', monospace;
+    font-size: 12px;
+    color: var(--text3);
+    padding-top: 1px;
+    flex-shrink: 0;
+    width: 16px;
+  }
+
+  .dep-text {
+    font-size: 13.5px;
+    color: var(--text2);
+    line-height: 1.6;
+  }
+
+  .dep-text strong {
+    color: var(--text);
+    font-weight: 600;
+  }
+
+  .deficiency-box {
+    margin: 16px 24px 24px;
+    background: rgba(212,93,93,0.06);
+    border: 1px solid rgba(212,93,93,0.15);
+    border-radius: 10px;
+    padding: 14px 16px;
+  }
+
+  .deficiency-label {
+    font-family: 'DM Mono', monospace;
+    font-size: 10px;
+    color: var(--rose);
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    margin-bottom: 6px;
+  }
+
+  .deficiency-text {
+    font-size: 13px;
+    color: var(--text2);
+    line-height: 1.6;
+  }
+
+  /* VITAMINS REFERENCE */
+  .vitamins-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(360px, 1fr));
+    gap: 20px;
+  }
+
+  .vitamin-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    overflow: hidden;
+  }
+
+  .vitamin-card-header {
+    padding: 20px 20px 14px;
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .vitamin-symbol {
+    font-family: 'Fraunces', serif;
+    font-size: 28px;
+    font-weight: 900;
+    line-height: 1;
+    width: 52px;
+    height: 52px;
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+  }
+
+  .vitamin-info-meta {}
+
+  .vitamin-full-name {
+    font-family: 'Fraunces', serif;
+    font-size: 17px;
+    font-weight: 600;
+    color: var(--heading);
+    letter-spacing: -0.3px;
+  }
+
+  .vitamin-aka {
+    font-family: 'DM Mono', monospace;
+    font-size: 10px;
+    color: var(--text3);
+    margin-top: 2px;
+  }
+
+  .vitamin-card-body { padding: 16px 20px; }
+
+  .vit-section-label {
+    font-family: 'DM Mono', monospace;
+    font-size: 10px;
+    color: var(--text3);
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    margin-bottom: 8px;
+  }
+
+  .vit-function {
+    font-size: 13.5px;
+    color: var(--text2);
+    line-height: 1.6;
+    margin-bottom: 14px;
+  }
+
+  .sources-list {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    margin-bottom: 14px;
+  }
+
+  .source-tag {
+    font-size: 12px;
+    padding: 3px 10px;
+    border-radius: 20px;
+    background: var(--tag-bg);
+    border: 1px solid var(--border);
+    color: var(--text2);
+    display: flex;
+    align-items: center;
+    gap: 5px;
+  }
+
+  .source-tag .src-icon { font-size: 13px; }
+
+  .codeps-list { margin-bottom: 0; }
+
+  .codep-badge {
+    font-family: 'DM Mono', monospace;
+    font-size: 11px;
+    padding: 3px 8px;
+    border-radius: 5px;
+    border: 1px solid;
+    display: inline-block;
+    margin: 2px 3px 2px 0;
+  }
+
+  /* MINERALS REFERENCE */
+  .minerals-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(360px, 1fr));
+    gap: 20px;
+  }
+
+  /* DEFICIENCY CHAINS */
+  .chain-list {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+  }
+
+  .chain-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    overflow: hidden;
+  }
+
+  .chain-header {
+    padding: 20px 24px 14px;
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .chain-title {
+    font-family: 'Fraunces', serif;
+    font-size: 20px;
+    font-weight: 700;
+    color: var(--heading);
+    letter-spacing: -0.5px;
+  }
+
+  .chain-severity {
+    font-family: 'DM Mono', monospace;
+    font-size: 10px;
+    padding: 4px 10px;
+    border-radius: 20px;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+  }
+
+  .sev-critical { background: rgba(212,93,93,0.15); color: var(--rose); border: 1px solid rgba(212,93,93,0.3); }
+  .sev-high { background: rgba(224,123,42,0.15); color: var(--amber); border: 1px solid rgba(224,123,42,0.3); }
+  .sev-moderate { background: rgba(212,168,67,0.15); color: var(--gold); border: 1px solid rgba(212,168,67,0.3); }
+
+  .chain-flow {
+    padding: 20px 24px;
+    display: flex;
+    align-items: center;
+    gap: 0;
+    flex-wrap: wrap;
+    gap: 0;
+    overflow-x: auto;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .chain-node {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 4px;
+    min-width: 90px;
+  }
+
+  .chain-node-bubble {
+    width: 56px;
+    height: 56px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: 'DM Mono', monospace;
+    font-size: 11px;
+    font-weight: 500;
+    text-align: center;
+    line-height: 1.2;
+    border: 2px solid;
+  }
+
+  .chain-node-label {
+    font-size: 11px;
+    color: var(--text3);
+    text-align: center;
+    max-width: 80px;
+  }
+
+  .chain-arrow {
+    font-size: 18px;
+    color: var(--text3);
+    margin: 0 -4px;
+    padding-bottom: 20px;
+    flex-shrink: 0;
+  }
+
+  .chain-missing {
+    padding: 0 24px 24px;
+  }
+
+  .missing-label {
+    font-family: 'DM Mono', monospace;
+    font-size: 10px;
+    color: var(--text3);
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    margin-bottom: 10px;
+  }
+
+  .missing-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+  }
+
+  .missing-item {
+    background: rgba(20,29,24,0.8);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 10px 12px;
+    font-size: 13px;
+    color: var(--text2);
+  }
+
+  .missing-item strong { color: var(--rose2); display: block; font-size: 12px; margin-bottom: 2px; }
+
+  /* SOURCES TABLE */
+  .sources-section { margin-bottom: 40px; }
+
+  .sources-category-title {
+    font-family: 'Fraunces', serif;
+    font-size: 22px;
+    font-weight: 700;
+    color: var(--heading);
+    letter-spacing: -0.5px;
+    margin-bottom: 16px;
+    padding-bottom: 10px;
+    border-bottom: 1px solid var(--border);
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+
+  .sources-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-bottom: 24px;
+  }
+
+  .sources-table th {
+    font-family: 'DM Mono', monospace;
+    font-size: 10px;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    color: var(--text3);
+    text-align: left;
+    padding: 10px 16px;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .sources-table td {
+    padding: 12px 16px;
+    border-bottom: 1px solid rgba(30,45,36,0.5);
+    font-size: 13.5px;
+    color: var(--text2);
+    vertical-align: top;
+  }
+
+  .sources-table tr:hover td { background: rgba(255,255,255,0.01); }
+
+  .sources-table td:first-child {
+    font-family: 'Fraunces', serif;
+    font-size: 15px;
+    font-weight: 600;
+    color: var(--text);
+  }
+
+  .food-icons { font-size: 16px; letter-spacing: 2px; }
+
+  /* TIPS */
+  .tips-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+    gap: 20px;
+  }
+
+  .tip-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    padding: 22px;
+  }
+
+  .tip-icon { font-size: 28px; margin-bottom: 12px; }
+
+  .tip-title {
+    font-family: 'Fraunces', serif;
+    font-size: 18px;
+    font-weight: 700;
+    color: var(--heading);
+    margin-bottom: 10px;
+    letter-spacing: -0.3px;
+  }
+
+  .tip-text {
+    font-size: 13.5px;
+    color: var(--text2);
+    line-height: 1.7;
+  }
+
+  .tip-text strong { color: var(--text); }
+
+  /* COLOR UTILITY CLASSES */
+  .c-green { color: var(--accent); }
+  .c-gold { color: var(--gold); }
+  .c-blue { color: var(--blue); }
+  .c-rose { color: var(--rose); }
+  .c-purple { color: var(--purple); }
+  .c-teal { color: var(--teal); }
+  .c-amber { color: var(--amber); }
+
+  .bg-green { background: rgba(93,202,126,0.1); }
+  .bg-gold { background: rgba(212,168,67,0.1); }
+  .bg-blue { background: rgba(74,144,217,0.1); }
+  .bg-rose { background: rgba(212,93,93,0.1); }
+  .bg-purple { background: rgba(139,92,246,0.1); }
+  .bg-teal { background: rgba(45,212,191,0.1); }
+  .bg-amber { background: rgba(224,123,42,0.1); }
+
+  .border-green { border-color: rgba(93,202,126,0.3); }
+  .border-gold { border-color: rgba(212,168,67,0.3); }
+  .border-blue { border-color: rgba(74,144,217,0.3); }
+  .border-rose { border-color: rgba(212,93,93,0.3); }
+  .border-purple { border-color: rgba(139,92,246,0.3); }
+  .border-teal { border-color: rgba(45,212,191,0.3); }
+  .border-amber { border-color: rgba(224,123,42,0.3); }
+
+  /* SCROLL ANIMATIONS */
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(16px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  .cluster-card, .vitamin-card, .chain-card, .tip-card {
+    animation: fadeUp 0.4s ease both;
+  }
+
+  .cluster-card:nth-child(2) { animation-delay: 0.05s; }
+  .cluster-card:nth-child(3) { animation-delay: 0.1s; }
+  .cluster-card:nth-child(4) { animation-delay: 0.15s; }
+  .cluster-card:nth-child(5) { animation-delay: 0.2s; }
+
+  /* LAB TESTS PAGE */
+  .lt-section-title {
+    font-family: 'Fraunces', serif;
+    font-size: 22px;
+    font-weight: 700;
+    color: var(--heading);
+    letter-spacing: -0.5px;
+    margin-bottom: 20px;
+    padding-bottom: 12px;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .labs-notice {
+    background: rgba(93,202,126,0.05);
+    border: 1px solid rgba(93,202,126,0.2);
+    border-radius: 10px;
+    padding: 14px 18px;
+    margin-bottom: 20px;
+    display: flex;
+    gap: 10px;
+    font-size: 13px;
+    color: var(--text2);
+    line-height: 1.6;
+  }
+
+  .lab-cat-block { margin-bottom: 36px; }
+
+  .lab-cat-title {
+    font-family: 'DM Mono', monospace;
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    color: var(--accent);
+    margin-bottom: 14px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+
+  .lab-cat-title::after {
+    content: '';
+    flex: 1;
+    height: 1px;
+    background: var(--border);
+  }
+
+  .ind-tests-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(380px, 1fr));
+    gap: 16px;
+  }
+
+  .ind-test-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    overflow: hidden;
+    transition: border-color 0.2s;
+  }
+
+  .ind-test-card:hover { border-color: var(--border2); }
+
+  .ind-test-header {
+    padding: 16px 18px 12px;
+    border-bottom: 1px solid var(--border);
+    background: var(--surface2);
+  }
+
+  .ind-test-name {
+    font-family: 'Fraunces', serif;
+    font-size: 17px;
+    font-weight: 700;
+    color: var(--heading);
+    letter-spacing: -0.3px;
+    margin-bottom: 3px;
+  }
+
+  .ind-test-aka {
+    font-family: 'DM Mono', monospace;
+    font-size: 10px;
+    color: var(--text3);
+    letter-spacing: 0.3px;
+  }
+
+  .ind-test-body { padding: 14px 18px 16px; }
+
+  .ind-row {
+    display: flex;
+    flex-direction: column;
+    gap: 3px;
+    margin-bottom: 11px;
+  }
+
+  .ind-row:last-child { margin-bottom: 0; }
+
+  .ind-label {
+    font-family: 'DM Mono', monospace;
+    font-size: 10px;
+    text-transform: uppercase;
+    letter-spacing: 0.8px;
+    color: var(--text3);
+  }
+
+  .ind-val {
+    font-size: 13px;
+    color: var(--text2);
+    line-height: 1.6;
+  }
+
+  .fasting-badge {
+    font-family: 'DM Mono', monospace;
+    font-size: 11px;
+    padding: 3px 10px;
+    border-radius: 20px;
+    display: inline-block;
+  }
+
+  .fasting-no { background: rgba(93,202,126,0.1); color: var(--accent); border: 1px solid rgba(93,202,126,0.25); }
+  .fasting-yes { background: rgba(224,123,42,0.1); color: var(--amber); border: 1px solid rgba(224,123,42,0.25); }
+
+  .price-val {
+    font-family: 'Fraunces', serif;
+    font-size: 18px;
+    font-weight: 700;
+    color: var(--gold2) !important;
+    letter-spacing: -0.5px;
+  }
+
+  .ind-labs { margin-top: 12px; display: flex; flex-direction: column; gap: 8px; }
+
+  .ind-lab-links {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    margin-top: 4px;
+  }
+
+  .lab-link {
+    font-family: 'DM Mono', monospace;
+    font-size: 11px;
+    padding: 4px 10px;
+    border-radius: 6px;
+    background: var(--tag-bg);
+    border: 1px solid var(--border2);
+    color: var(--blue2);
+    text-decoration: none;
+    transition: all 0.2s;
+  }
+
+  .lab-link:hover {
+    background: rgba(74,144,217,0.1);
+    border-color: rgba(74,144,217,0.35);
+    color: var(--blue);
+  }
+
+  /* PACKAGES */
+  .pkg-notice {
+    font-size: 13.5px;
+    color: var(--text2);
+    margin-bottom: 24px;
+    line-height: 1.7;
+    padding: 14px 18px;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+  }
+
+  .lab-block { margin-bottom: 36px; }
+
+  .lab-block-header {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    margin-bottom: 16px;
+    padding-bottom: 12px;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .lab-logo { font-size: 28px; }
+
+  .lab-block-name {
+    font-family: 'Fraunces', serif;
+    font-size: 20px;
+    font-weight: 700;
+    color: var(--heading);
+    letter-spacing: -0.5px;
+  }
+
+  .lab-block-tag {
+    font-size: 12.5px;
+    color: var(--text3);
+    margin-top: 2px;
+  }
+
+  .pkg-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 14px;
+  }
+
+  .pkg-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 18px;
+    position: relative;
+    transition: border-color 0.2s;
+    display: flex;
+    flex-direction: column;
+    gap: 0;
+  }
+
+  .pkg-highlight {
+    border-color: rgba(212,168,67,0.35);
+    background: linear-gradient(135deg, var(--surface) 0%, rgba(212,168,67,0.04) 100%);
+  }
+
+  .pkg-best-badge {
+    font-family: 'DM Mono', monospace;
+    font-size: 10px;
+    color: var(--gold2);
+    background: rgba(212,168,67,0.12);
+    border: 1px solid rgba(212,168,67,0.3);
+    border-radius: 20px;
+    padding: 3px 10px;
+    display: inline-block;
+    margin-bottom: 10px;
+    width: fit-content;
+  }
+
+  .pkg-name {
+    font-family: 'Fraunces', serif;
+    font-size: 16px;
+    font-weight: 700;
+    color: var(--heading);
+    letter-spacing: -0.3px;
+    margin-bottom: 4px;
+  }
+
+  .pkg-tests-count {
+    font-family: 'DM Mono', monospace;
+    font-size: 11px;
+    color: var(--accent);
+    margin-bottom: 12px;
+  }
+
+  .pkg-includes-label, .pkg-best-for-label {
+    font-family: 'DM Mono', monospace;
+    font-size: 10px;
+    color: var(--text3);
+    text-transform: uppercase;
+    letter-spacing: 0.8px;
+    margin-bottom: 4px;
+  }
+
+  .pkg-includes {
+    font-size: 12.5px;
+    color: var(--text2);
+    line-height: 1.6;
+    margin-bottom: 12px;
+  }
+
+  .pkg-best-for {
+    font-size: 12.5px;
+    color: var(--text3);
+    line-height: 1.6;
+    margin-bottom: 16px;
+    flex: 1;
+  }
+
+  .pkg-footer {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 10px;
+    margin-top: auto;
+    padding-top: 14px;
+    border-top: 1px solid var(--border);
+  }
+
+  .pkg-price {
+    font-family: 'Fraunces', serif;
+    font-size: 22px;
+    font-weight: 900;
+    color: var(--gold2);
+    letter-spacing: -0.5px;
+  }
+
+  .pkg-btn {
+    font-family: 'DM Mono', monospace;
+    font-size: 11px;
+    padding: 8px 16px;
+    border-radius: 8px;
+    background: rgba(93,202,126,0.12);
+    border: 1px solid rgba(93,202,126,0.3);
+    color: var(--accent);
+    text-decoration: none;
+    transition: all 0.2s;
+    white-space: nowrap;
+  }
+
+  .pkg-btn:hover {
+    background: rgba(93,202,126,0.2);
+    border-color: rgba(93,202,126,0.5);
+  }
+
+  /* PROTOCOLS */
+  .proto-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 16px;
+  }
+
+  .proto-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 20px;
+  }
+
+  .proto-icon { font-size: 26px; margin-bottom: 10px; }
+
+  .proto-title {
+    font-family: 'Fraunces', serif;
+    font-size: 17px;
+    font-weight: 700;
+    color: var(--heading);
+    letter-spacing: -0.3px;
+    margin-bottom: 6px;
+  }
+
+  .proto-desc {
+    font-size: 13px;
+    color: var(--text3);
+    margin-bottom: 14px;
+    line-height: 1.6;
+  }
+
+  .proto-tests {
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    margin-bottom: 14px;
+  }
+
+  .proto-tests li {
+    font-size: 13px;
+    color: var(--text2);
+    padding-left: 16px;
+    position: relative;
+    line-height: 1.5;
+  }
+
+  .proto-tests li::before {
+    content: '→';
+    position: absolute;
+    left: 0;
+    color: var(--accent);
+    font-size: 11px;
+    top: 1px;
+  }
+
+  .proto-cost {
+    font-size: 12px;
+    color: var(--gold);
+    padding: 8px 12px;
+    background: rgba(212,168,67,0.07);
+    border: 1px solid rgba(212,168,67,0.2);
+    border-radius: 8px;
+    line-height: 1.6;
+  }
+
+  /* LAB COMPARE TABLE */
+  .lab-compare-table-wrap {
+    overflow-x: auto;
+    border-radius: 12px;
+    border: 1px solid var(--border);
+  }
+
+  .lab-compare-table {
+    width: 100%;
+    border-collapse: collapse;
+    min-width: 700px;
+  }
+
+  .lab-compare-table th {
+    font-family: 'DM Mono', monospace;
+    font-size: 10px;
+    text-transform: uppercase;
+    letter-spacing: 0.8px;
+    color: var(--text3);
+    text-align: left;
+    padding: 12px 16px;
+    background: var(--surface2);
+    border-bottom: 1px solid var(--border);
+  }
+
+  .lab-compare-table td {
+    padding: 13px 16px;
+    border-bottom: 1px solid rgba(30,45,36,0.5);
+    font-size: 13px;
+    color: var(--text2);
+    vertical-align: top;
+  }
+
+  .lab-compare-table tr:last-child td { border-bottom: none; }
+  .lab-compare-table tr:hover td { background: rgba(255,255,255,0.01); }
+  .lab-compare-table td:first-child { color: var(--text); }
+
+  @media (max-width: 768px) {
+    .ind-tests-grid { grid-template-columns: 1fr; }
+    .pkg-grid { grid-template-columns: 1fr; }
+    .proto-grid { grid-template-columns: 1fr; }
+  }
+
+    nav { padding: 0 16px; }
+    .hero { padding: 48px 24px 40px; }
+    .section-inner { padding: 32px 24px; }
+    .clusters-grid { grid-template-columns: 1fr; }
+    .vitamins-grid, .minerals-grid, .tips-grid { grid-template-columns: 1fr; }
+    .missing-grid { grid-template-columns: 1fr; }
+    .chain-flow { gap: 0; }
+  }
+
+  /* NOTICE */
+  .notice {
+    background: rgba(212,168,67,0.06);
+    border: 1px solid rgba(212,168,67,0.2);
+    border-radius: 10px;
+    padding: 14px 18px;
+    margin-bottom: 32px;
+    display: flex;
+    gap: 10px;
+    align-items: flex-start;
+    font-size: 13px;
+    color: var(--text2);
+  }
+
+  .notice-icon { font-size: 16px; flex-shrink: 0; }
+
+  .notice strong { color: var(--gold2); }
+
+  /* DOSE NOTE */
+  .dose-note {
+    font-family: 'DM Mono', monospace;
+    font-size: 11px;
+    padding: 6px 12px;
+    border-radius: 6px;
+    margin-top: 12px;
+    border: 1px dashed;
+    color: var(--text3);
+  }
+</style>
+</head>
+<body>
+
+<nav>
+  <a class="nav-brand" href="#">NutriSync <span>atlas</span></a>
+  <div class="nav-tabs">
+    <div class="nav-tab active" onclick="showSection('overview')" data-section="overview">Overview</div>
+    <div class="nav-tab" onclick="showSection('clusters')" data-section="clusters">Codependency Clusters</div>
+    <div class="nav-tab" onclick="showSection('vitamins')" data-section="vitamins">Vitamins</div>
+    <div class="nav-tab" onclick="showSection('minerals')" data-section="minerals">Minerals</div>
+    <div class="nav-tab" onclick="showSection('chains')" data-section="chains">Deficiency Chains</div>
+    <div class="nav-tab" onclick="showSection('sources')" data-section="sources">Food Sources</div>
+    <div class="nav-tab" onclick="showSection('tips')" data-section="tips">Supplementing Smart</div>
+    <div class="nav-tab" onclick="showSection('labtests')" data-section="labtests">🇮🇳 Lab Tests</div>
+  </div>
+  <div class="theme-toggle" onclick="toggleTheme()" id="themeToggle">
+    <span class="theme-icon">🌙</span>
+    <span id="themeLabel">Dark</span>
+  </div>
+</nav>
+
+
+<!-- BOOKMARKS PANEL -->
+<div class="bookmarks-bar">
+  <div class="bookmarks-panel" id="bookmarksPanel">
+    <div class="bookmarks-panel-header">
+      <div class="bookmarks-panel-title">📌 Saved</div>
+      <button class="bookmarks-clear" onclick="clearBookmarks()">Clear all</button>
+    </div>
+    <div class="bookmarks-list" id="bookmarksList">
+      <div class="bookmarks-empty">No bookmarks yet.<br>Click 🔖 on any card to save it.</div>
+    </div>
+  </div>
+  <button class="bookmarks-fab" onclick="toggleBookmarksPanel()" id="bookmarksFab" title="Saved items">
+    📌
+    <span class="fab-count" id="fabCount">0</span>
+  </button>
+</div>
+
+<!-- CITATIONS MODAL -->
+<div class="citations-modal-overlay" id="citationsOverlay" onclick="closeCitations(event)">
+  <div class="citations-modal">
+    <div class="citations-modal-header">
+      <div class="citations-modal-title">📚 Key References & Sources</div>
+      <button class="citations-modal-close" onclick="closeCitationsBtn()">✕</button>
+    </div>
+    <div class="citations-modal-body" id="citationsBody"></div>
+  </div>
+</div>
+
+<main class="main">
+
+  <!-- HERO -->
+  <div class="hero">
+    <div class="hero-eyebrow">Nutritional Biochemistry Reference</div>
+    <h1>Vitamins &amp; Minerals<br /><em>never work alone.</em></h1>
+    <p class="hero-desc">
+      Every vitamin and mineral in your body participates in a web of mutual dependencies. Taking one in isolation — without its cofactors — can be useless, or even harmful. This atlas maps those relationships.
+    </p>
+    <div class="hero-stats">
+      <div class="hero-stat">
+        <div class="hero-stat-num">13</div>
+        <div class="hero-stat-label">Essential Vitamins</div>
+      </div>
+      <div class="hero-stat">
+        <div class="hero-stat-num">16</div>
+        <div class="hero-stat-label">Essential Minerals</div>
+      </div>
+      <div class="hero-stat">
+        <div class="hero-stat-num">8</div>
+        <div class="hero-stat-label">Major Codependency Clusters</div>
+      </div>
+      <div class="hero-stat">
+        <div class="hero-stat-num">300+</div>
+        <div class="hero-stat-label">Enzymatic Reactions (Magnesium alone)</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===== OVERVIEW ===== -->
+  <div id="overview" class="section active">
+    <div class="section-inner">
+      <div class="notice">
+        <span class="notice-icon">⚠</span>
+        <span><strong>Medical Disclaimer:</strong> This reference is for educational purposes. All specific claims reflect established nutritional biochemistry. Consult a qualified healthcare provider before starting any supplementation protocol.</span>
+      </div>
+
+      <div class="section-header">
+        <h2>How Codependencies Work</h2>
+        <p>Nutrients act as cofactors, catalysts, and regulators for one another. A deficiency in one can functionally create a deficiency in several others — even when those nutrients are present in adequate amounts. <button onclick="openCitations()" style="font-family:'DM Mono',monospace;font-size:11px;padding:4px 12px;border-radius:6px;border:1px solid var(--border2);background:var(--surface2);color:var(--blue2);cursor:pointer;margin-left:8px;">📚 Key References</button></p>
+      </div>
+
+      <div class="tips-grid">
+        <div class="tip-card">
+          <div class="tip-icon">🔗</div>
+          <div class="tip-title">The Cofactor Concept</div>
+          <div class="tip-text">Many enzymes require a specific mineral or vitamin to function. <strong>Magnesium is required to activate Vitamin D.</strong> Without it, even high-dose D3 supplementation may fail to produce active calcitriol. The nutrient you take is only as useful as its cofactors allow.</div>
+        </div>
+        <div class="tip-card">
+          <div class="tip-icon">🔄</div>
+          <div class="tip-title">The Recycling Loop</div>
+          <div class="tip-text">Some nutrients are "used up" and need others to be regenerated. <strong>Vitamin C regenerates Vitamin E</strong> after it neutralizes a free radical. Without C, E stays in its oxidized (spent) form — unable to protect cell membranes.</div>
+        </div>
+        <div class="tip-card">
+          <div class="tip-icon">🚦</div>
+          <div class="tip-title">The Traffic Director</div>
+          <div class="tip-text"><strong>Vitamin K2 directs calcium traffic.</strong> D3 raises blood calcium; K2 activates proteins (osteocalcin, MGP) that pull calcium into bones and prevent it from depositing in arteries. D3 without K2 can raise arterial calcification risk.</div>
+        </div>
+        <div class="tip-card">
+          <div class="tip-icon">⚖️</div>
+          <div class="tip-title">The Antagonist Balance</div>
+          <div class="tip-text">Some nutrients compete. <strong>High-dose zinc depletes copper</strong> because both use the same intestinal transporter. High iron can block zinc. Excess calcium can suppress magnesium. Balance, not megadose, is the goal.</div>
+        </div>
+        <div class="tip-card">
+          <div class="tip-icon">🧬</div>
+          <div class="tip-title">The Methylation Engine</div>
+          <div class="tip-text"><strong>B12, B9 (folate), and B6 govern methylation</strong> — the process that controls gene expression, detoxification, neurotransmitter synthesis, and homocysteine clearance. A deficiency in any one stalls the entire cycle.</div>
+        </div>
+        <div class="tip-card">
+          <div class="tip-icon">🦋</div>
+          <div class="tip-title">The Thyroid Cascade</div>
+          <div class="tip-text">The thyroid requires <strong>iodine to make hormones, selenium to convert T4→T3</strong> (the active form), zinc and iron for receptor signaling, and vitamin D for immune regulation. A single deficiency can cause hypothyroid symptoms.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===== CLUSTERS ===== -->
+  <div id="clusters" class="section">
+    <div class="section-inner">
+      <div class="section-header">
+        <h2>Codependency Clusters</h2>
+        <p>These are the most clinically significant nutrient partnerships. Each cluster functions as an integrated system — supplementing one member in isolation is often ineffective or counterproductive.</p>
+      </div>
+
+      <div class="clusters-grid">
+
+        <!-- CLUSTER 1: D3/K2/Calcium/Magnesium -->
+        <div class="cluster-card">
+          <div class="cluster-header">
+            <div class="cluster-icon bg-gold border-gold" style="border:1px solid rgba(212,168,67,0.3)">☀️</div>
+            <div class="cluster-meta">
+              <div class="cluster-name">The Bone & Calcium Quartet</div>
+              <div class="cluster-tagline">D3 · K2 · Calcium · Magnesium</div>
+            </div>
+          </div>
+          <div class="cluster-members">
+            <span class="member-tag bg-gold border-gold c-gold">Vitamin D3</span>
+            <span class="member-tag bg-green border-green c-green">Vitamin K2 (MK-7)</span>
+            <span class="member-tag bg-blue border-blue c-blue">Calcium</span>
+            <span class="member-tag bg-purple border-purple c-purple">Magnesium</span>
+          </div>
+          <div class="cluster-body">
+            <div class="dep-item">
+              <div class="dep-arrow">→</div>
+              <div class="dep-text"><strong>D3</strong> increases absorption of calcium from the gut by up to 20×. Without D3, only 10–15% of dietary calcium is absorbed.</div>
+            </div>
+            <div class="dep-item">
+              <div class="dep-arrow">→</div>
+              <div class="dep-text"><strong>K2 (MK-7)</strong> activates osteocalcin (deposits calcium into bone) and Matrix GLA Protein (removes calcium from arteries). Without K2, calcium circulates freely and calcifies soft tissue.</div>
+            </div>
+            <div class="dep-item">
+              <div class="dep-arrow">→</div>
+              <div class="dep-text"><strong>Magnesium</strong> is required by the liver and kidneys to convert D3 into its active form (calcitriol). D3 supplements without magnesium may be ineffective. Magnesium also balances calcium inside cells.</div>
+            </div>
+            <div class="dep-item">
+              <div class="dep-arrow">→</div>
+              <div class="dep-text"><strong>Calcium</strong> and magnesium compete for absorption — excess calcium can deplete magnesium. The optimal Ca:Mg dietary ratio is approximately 2:1.</div>
+            </div>
+          </div>
+          <div class="deficiency-box">
+            <div class="deficiency-label">⚠ If K2 is missing</div>
+            <div class="deficiency-text">D3 + Calcium without K2 may increase arterial calcification, kidney stones, and calcification of soft tissue. The calcium is absorbed but goes to the wrong places.</div>
+          </div>
+        </div>
+
+        <!-- CLUSTER 2: B Vitamins Methylation -->
+        <div class="cluster-card">
+          <div class="cluster-header">
+            <div class="cluster-icon bg-blue" style="border:1px solid rgba(74,144,217,0.3)">🧬</div>
+            <div class="cluster-meta">
+              <div class="cluster-name">The Methylation Triad</div>
+              <div class="cluster-tagline">B12 · B9 (Folate) · B6</div>
+            </div>
+          </div>
+          <div class="cluster-members">
+            <span class="member-tag bg-blue border-blue c-blue">Vitamin B12</span>
+            <span class="member-tag bg-blue border-blue c-blue">Vitamin B9 (Folate)</span>
+            <span class="member-tag bg-blue border-blue c-blue">Vitamin B6</span>
+            <span class="member-tag bg-rose border-rose c-rose">Riboflavin (B2)</span>
+          </div>
+          <div class="cluster-body">
+            <div class="dep-item">
+              <div class="dep-arrow">→</div>
+              <div class="dep-text"><strong>B12</strong> is required to convert folate (B9) into its active, usable form 5-MTHF. Without B12, folate is "trapped" — a phenomenon called the folate trap. You can be folate-deficient even with plenty of dietary folate.</div>
+            </div>
+            <div class="dep-item">
+              <div class="dep-arrow">→</div>
+              <div class="dep-text"><strong>B9 + B12 + B6</strong> together break down homocysteine — a toxic amino acid linked to cardiovascular disease, cognitive decline, and neural tube defects. Any one missing = elevated homocysteine.</div>
+            </div>
+            <div class="dep-item">
+              <div class="dep-arrow">→</div>
+              <div class="dep-text"><strong>B2 (Riboflavin)</strong> regenerates MTHFR enzyme function — especially critical for the ~40% of people with MTHFR gene variants who struggle to activate folate and B12.</div>
+            </div>
+            <div class="dep-item">
+              <div class="dep-arrow">→</div>
+              <div class="dep-text"><strong>B12</strong> requires Intrinsic Factor (a stomach protein) for absorption. Those with low stomach acid, PPIs, or gut issues often need sublingual or injected B12.</div>
+            </div>
+            <div class="dep-item">
+              <div class="dep-arrow">→</div>
+              <div class="dep-text"><strong>MTHFR gene variants (C677T / A1298C)</strong> impair conversion of folic acid → active 5-MTHF and cyanocobalamin → methylcobalamin. For these individuals, synthetic folic acid supplementation can worsen outcomes by blocking the folate receptor. Always use Methylfolate (5-MTHF) and Methylcobalamin/Adenosylcobalamin — not folic acid or cyanocobalamin.</div>
+            </div>
+            <div class="dep-item">
+              <div class="dep-arrow">→</div>
+              <div class="dep-text"><strong>Serum B12 is an unreliable marker alone.</strong> Up to 20% of people with "normal" serum B12 have functional B12 deficiency. Active B12 (Holotranscobalamin) and MMA (Methylmalonic Acid) are far more sensitive markers — MMA rises specifically when B12 is functionally depleted at the cellular level, before serum B12 drops.</div>
+            </div>
+          </div>
+          <div class="deficiency-box">
+            <div class="deficiency-label">⚠ If B12 is missing</div>
+            <div class="deficiency-text">High-dose folic acid (B9) supplementation can mask B12 deficiency anemia while allowing neurological damage to progress silently — one of the most dangerous nutrient interactions.</div>
+          </div>
+        </div>
+
+        <!-- CLUSTER 3: Iron/C/Copper/Zinc -->
+        <div class="cluster-card">
+          <div class="cluster-header">
+            <div class="cluster-icon bg-rose" style="border:1px solid rgba(212,93,93,0.3)">🩸</div>
+            <div class="cluster-meta">
+              <div class="cluster-name">The Iron Quartet</div>
+              <div class="cluster-tagline">Iron · Vitamin C · Copper · Zinc</div>
+            </div>
+          </div>
+          <div class="cluster-members">
+            <span class="member-tag bg-rose border-rose c-rose">Iron</span>
+            <span class="member-tag bg-amber border-amber c-amber">Vitamin C</span>
+            <span class="member-tag bg-amber border-amber c-amber">Copper</span>
+            <span class="member-tag bg-teal border-teal c-teal">Zinc</span>
+            <span class="member-tag bg-gold border-gold c-gold">Vitamin A</span>
+          </div>
+          <div class="cluster-body">
+            <div class="dep-item">
+              <div class="dep-arrow">→</div>
+              <div class="dep-text"><strong>Vitamin C</strong> converts non-heme iron (plant-based) from Fe³⁺ to Fe²⁺, increasing absorption by 2–4×. Taking iron without vitamin C significantly reduces absorption.</div>
+            </div>
+            <div class="dep-item">
+              <div class="dep-arrow">→</div>
+              <div class="dep-text"><strong>Copper</strong> (via ceruloplasmin/ferroxidase) is essential for iron to exit storage cells and enter the bloodstream. Copper deficiency causes functional iron deficiency even with adequate iron stores.</div>
+            </div>
+            <div class="dep-item">
+              <div class="dep-arrow">→</div>
+              <div class="dep-text"><strong>Zinc and Iron compete</strong> for the same intestinal transporter (DMT1). High-dose iron supplements taken simultaneously with zinc reduce zinc absorption by up to 50%.</div>
+            </div>
+            <div class="dep-item">
+              <div class="dep-arrow">→</div>
+              <div class="dep-text"><strong>Vitamin A</strong> helps mobilize iron from liver stores and is required to produce transferrin (the iron-transport protein) and red blood cell precursors.</div>
+            </div>
+            <div class="dep-item">
+              <div class="dep-arrow">→</div>
+              <div class="dep-text"><strong>⚠ CRP/Inflammation safety check:</strong> Elevated CRP triggers the liver to release Hepcidin — a hormone that blocks iron absorption from the gut and traps iron inside storage cells. This creates functional iron deficiency: serum iron appears low, but it is a defensive response to inflammation, not true depletion. Supplementing iron during active inflammation is ineffective and potentially harmful. Always test CRP alongside iron markers before starting iron supplementation.</div>
+            </div>
+          </div>
+          <div class="deficiency-box">
+            <div class="deficiency-label">⚠ High zinc without copper</div>
+            <div class="deficiency-text">Long-term zinc supplementation without copper causes copper deficiency — leading to anemia that looks like iron deficiency, neuropathy, and poor wound healing. Always pair zinc with copper at ~8:1 ratio.</div>
+          </div>
+        </div>
+
+        <!-- CLUSTER 4: Thyroid -->
+        <div class="cluster-card">
+          <div class="cluster-header">
+            <div class="cluster-icon bg-teal" style="border:1px solid rgba(45,212,191,0.3)">🦋</div>
+            <div class="cluster-meta">
+              <div class="cluster-name">The Thyroid System</div>
+              <div class="cluster-tagline">Iodine · Selenium · Zinc · Iron · Vitamin D</div>
+            </div>
+          </div>
+          <div class="cluster-members">
+            <span class="member-tag bg-teal border-teal c-teal">Iodine</span>
+            <span class="member-tag bg-teal border-teal c-teal">Selenium</span>
+            <span class="member-tag bg-teal border-teal c-teal">Zinc</span>
+            <span class="member-tag bg-rose border-rose c-rose">Iron</span>
+            <span class="member-tag bg-gold border-gold c-gold">Vitamin D</span>
+          </div>
+          <div class="cluster-body">
+            <div class="dep-item">
+              <div class="dep-arrow">→</div>
+              <div class="dep-text"><strong>Iodine</strong> is incorporated directly into thyroid hormones T3 and T4. Without iodine, the thyroid cannot produce hormones — leading to goiter and hypothyroidism.</div>
+            </div>
+            <div class="dep-item">
+              <div class="dep-arrow">→</div>
+              <div class="dep-text"><strong>Selenium</strong> (via deiodinase enzymes) converts T4 (inactive) to T3 (active). Without selenium, you may have normal T4 levels but still experience hypothyroid symptoms due to poor T4→T3 conversion. Also critical for thyroid peroxidase function.</div>
+            </div>
+            <div class="dep-item">
+              <div class="dep-arrow">→</div>
+              <div class="dep-text"><strong>Iron</strong> is needed for thyroid peroxidase, the enzyme that synthesizes thyroid hormones. Iron deficiency impairs thyroid function independently of iodine.</div>
+            </div>
+            <div class="dep-item">
+              <div class="dep-arrow">→</div>
+              <div class="dep-text"><strong>Zinc</strong> is required for T3 to bind its nuclear receptor. Even with adequate T3, zinc deficiency prevents hormone signaling from reaching target cells.</div>
+            </div>
+            <div class="dep-item">
+              <div class="dep-arrow">→</div>
+              <div class="dep-text"><strong>Iron → Thyroid Peroxidase (TPO) cross-link:</strong> TPO is an iron-dependent enzyme — it requires heme-iron at its active site to synthesize thyroid hormones. Iron deficiency impairs thyroid hormone production independently of iodine or selenium status. If thyroid function is low and iron studies show deficiency, treat iron first and re-test the thyroid panel.</div>
+            </div>
+            <div class="dep-item">
+              <div class="dep-arrow">→</div>
+              <div class="dep-text"><strong>Vitamin D3 + Hashimoto's (Anti-TPO antibodies):</strong> Vitamin D receptors are present on immune cells that regulate autoimmunity. Low Vitamin D is independently associated with elevated Anti-TPO antibodies and Hashimoto's disease. Clinical data show that correcting Vitamin D deficiency (to >40 ng/mL) significantly reduces TPO antibody titers in Hashimoto's patients. If Anti-TPO antibodies are positive, Vitamin D status should be treated as a priority cross-check.</div>
+            </div>
+          </div>
+          <div class="deficiency-box">
+            <div class="deficiency-label">⚠ Iodine without Selenium</div>
+            <div class="deficiency-text">High-dose iodine supplementation without adequate selenium can worsen autoimmune thyroid conditions (Hashimoto's) by increasing thyroid peroxidase antibodies. Selenium must precede or accompany iodine loading.</div>
+          </div>
+        </div>
+
+        <!-- CLUSTER 5: Magnesium Master -->
+        <div class="cluster-card">
+          <div class="cluster-header">
+            <div class="cluster-icon bg-purple" style="border:1px solid rgba(139,92,246,0.3)">⚡</div>
+            <div class="cluster-meta">
+              <div class="cluster-name">The Magnesium Web</div>
+              <div class="cluster-tagline">Magnesium — cofactor for 300+ enzymes</div>
+            </div>
+          </div>
+          <div class="cluster-members">
+            <span class="member-tag bg-purple border-purple c-purple">Magnesium</span>
+            <span class="member-tag bg-gold border-gold c-gold">Vitamin D</span>
+            <span class="member-tag bg-blue border-blue c-blue">B6 (P5P)</span>
+            <span class="member-tag bg-blue border-blue c-blue">Potassium</span>
+            <span class="member-tag bg-green border-green c-green">ATP</span>
+          </div>
+          <div class="cluster-body">
+            <div class="dep-item">
+              <div class="dep-arrow">→</div>
+              <div class="dep-text"><strong>Magnesium activates ATP</strong> — the body's energy currency. ATP must be bound to magnesium to be biologically active. Magnesium deficiency = cellular energy deficiency.</div>
+            </div>
+            <div class="dep-item">
+              <div class="dep-arrow">→</div>
+              <div class="dep-text"><strong>Magnesium activates Vitamin D</strong> via two hepatic and renal hydroxylation steps. High-dose D3 without sufficient magnesium can actually deplete magnesium further, causing muscle cramps, anxiety, and poor sleep.</div>
+            </div>
+            <div class="dep-item">
+              <div class="dep-arrow">→</div>
+              <div class="dep-text"><strong>Magnesium + B6 (P5P)</strong> work synergistically — both are required for the synthesis of serotonin, dopamine, and GABA. B6 also enhances magnesium transport into cells.</div>
+            </div>
+            <div class="dep-item">
+              <div class="dep-arrow">→</div>
+              <div class="dep-text"><strong>Potassium regulation</strong> requires magnesium. The Na⁺/K⁺-ATPase pump needs magnesium to function. Potassium deficiency that doesn't respond to supplementation is often caused by underlying magnesium deficiency.</div>
+            </div>
+          </div>
+          <div class="deficiency-box">
+            <div class="deficiency-label">⚠ The D3 Magnesium Drain</div>
+            <div class="deficiency-text">Starting high-dose D3 (5,000–10,000 IU/day) without adequate magnesium is a common cause of "D3 side effects" — headaches, anxiety, palpitations — which are actually magnesium depletion symptoms.</div>
+          </div>
+        </div>
+
+        <!-- CLUSTER 6: Antioxidant Network -->
+        <div class="cluster-card">
+          <div class="cluster-header">
+            <div class="cluster-icon bg-amber" style="border:1px solid rgba(224,123,42,0.3)">🛡️</div>
+            <div class="cluster-meta">
+              <div class="cluster-name">The Antioxidant Network</div>
+              <div class="cluster-tagline">C · E · Selenium · Glutathione · CoQ10</div>
+            </div>
+          </div>
+          <div class="cluster-members">
+            <span class="member-tag bg-amber border-amber c-amber">Vitamin C</span>
+            <span class="member-tag bg-amber border-amber c-amber">Vitamin E</span>
+            <span class="member-tag bg-teal border-teal c-teal">Selenium</span>
+            <span class="member-tag bg-green border-green c-green">Glutathione</span>
+            <span class="member-tag bg-gold border-gold c-gold">CoQ10</span>
+          </div>
+          <div class="cluster-body">
+            <div class="dep-item">
+              <div class="dep-arrow">→</div>
+              <div class="dep-text"><strong>Vitamin C regenerates Vitamin E</strong> — after Vitamin E donates an electron to neutralize a free radical, it becomes a radical itself. Vitamin C donates an electron to restore Vitamin E to its active form.</div>
+            </div>
+            <div class="dep-item">
+              <div class="dep-arrow">→</div>
+              <div class="dep-text"><strong>Selenium</strong> is the core of glutathione peroxidase — an enzyme that neutralizes hydrogen peroxide and lipid peroxides. Without selenium, the glutathione system cannot function properly.</div>
+            </div>
+            <div class="dep-item">
+              <div class="dep-arrow">→</div>
+              <div class="dep-text"><strong>CoQ10</strong> regenerates vitamin E within cell membranes and protects mitochondria. Statin drugs deplete CoQ10 — supplementing statins without CoQ10 worsens mitochondrial oxidative stress.</div>
+            </div>
+            <div class="dep-item">
+              <div class="dep-arrow">→</div>
+              <div class="dep-text"><strong>Glutathione recycling</strong> requires B2 (riboflavin) via glutathione reductase, and B3 (niacin, via NADPH). Both B vitamins are essential to keep glutathione in its active reduced form.</div>
+            </div>
+          </div>
+          <div class="deficiency-box">
+            <div class="deficiency-label">⚠ Isolated antioxidant supplementation</div>
+            <div class="deficiency-text">Taking very high doses of a single antioxidant (e.g. Vitamin E alone) can paradoxically increase oxidative stress. Antioxidants are most effective as an integrated network — not in isolation.</div>
+          </div>
+        </div>
+
+        <!-- CLUSTER 7: Fat-Soluble Vitamins -->
+        <div class="cluster-card">
+          <div class="cluster-header">
+            <div class="cluster-icon bg-green" style="border:1px solid rgba(93,202,126,0.3)">🌿</div>
+            <div class="cluster-meta">
+              <div class="cluster-name">Fat-Soluble Vitamin Balance</div>
+              <div class="cluster-tagline">A · D · E · K — the ADEK system</div>
+            </div>
+          </div>
+          <div class="cluster-members">
+            <span class="member-tag bg-green border-green c-green">Vitamin A</span>
+            <span class="member-tag bg-gold border-gold c-gold">Vitamin D</span>
+            <span class="member-tag bg-amber border-amber c-amber">Vitamin E</span>
+            <span class="member-tag bg-rose border-rose c-rose">Vitamin K</span>
+          </div>
+          <div class="cluster-body">
+            <div class="dep-item">
+              <div class="dep-arrow">→</div>
+              <div class="dep-text"><strong>Vitamins A and D are antagonists</strong> in high doses — they compete for the same RXR nuclear receptor. Extremely high A can block D signaling and vice versa. Balance is critical: the optimal A:D ratio is approximately 5:1.</div>
+            </div>
+            <div class="dep-item">
+              <div class="dep-arrow">→</div>
+              <div class="dep-text"><strong>Vitamin E in high doses</strong> can inhibit Vitamin K-dependent clotting factors. Those on blood thinners (warfarin) must be especially cautious with Vitamin E supplementation.</div>
+            </div>
+            <div class="dep-item">
+              <div class="dep-arrow">→</div>
+              <div class="dep-text"><strong>All four are fat-soluble</strong> — they require dietary fat for absorption. Taking these vitamins with a fat-free meal renders them largely unabsorbed. A minimum of ~10g of fat per meal enhances absorption.</div>
+            </div>
+            <div class="dep-item">
+              <div class="dep-arrow">→</div>
+              <div class="dep-text"><strong>Vitamin A (retinol)</strong> is required to convert beta-carotene (from plants) into active retinol — but this conversion is genetically variable. Up to 45% of people are poor converters and cannot rely on plant sources alone.</div>
+            </div>
+          </div>
+          <div class="deficiency-box">
+            <div class="deficiency-label">⚠ Storage risk</div>
+            <div class="deficiency-text">Unlike water-soluble vitamins, fat-soluble vitamins (especially A and D) accumulate in fat tissue and the liver. Chronic megadosing can lead to hypervitaminosis A or D toxicity. Regular testing is advised.</div>
+          </div>
+        </div>
+
+        <!-- CLUSTER 8: Zinc/B6/Copper -->
+        <div class="cluster-card">
+          <div class="cluster-header">
+            <div class="cluster-icon bg-teal" style="border:1px solid rgba(45,212,191,0.3)">🧠</div>
+            <div class="cluster-meta">
+              <div class="cluster-name">The Neurotransmitter Triad</div>
+              <div class="cluster-tagline">Zinc · B6 · Copper · Tryptophan</div>
+            </div>
+          </div>
+          <div class="cluster-members">
+            <span class="member-tag bg-teal border-teal c-teal">Zinc</span>
+            <span class="member-tag bg-blue border-blue c-blue">B6 (P5P)</span>
+            <span class="member-tag bg-amber border-amber c-amber">Copper</span>
+            <span class="member-tag bg-purple border-purple c-purple">B3 (Niacin)</span>
+            <span class="member-tag bg-green border-green c-green">Magnesium</span>
+          </div>
+          <div class="cluster-body">
+            <div class="dep-item">
+              <div class="dep-arrow">→</div>
+              <div class="dep-text"><strong>B6 (as P5P)</strong> is the rate-limiting cofactor for serotonin synthesis (from 5-HTP), dopamine synthesis (from L-DOPA), GABA synthesis, and melatonin production. Without activated B6, neurotransmitter production stalls.</div>
+            </div>
+            <div class="dep-item">
+              <div class="dep-arrow">→</div>
+              <div class="dep-text"><strong>Zinc</strong> regulates glutamate (excitatory) neurotransmission and is stored in synaptic vesicles. Zinc deficiency is associated with depression, poor memory, and heightened anxiety. Also needed to convert B6 to its active P5P form.</div>
+            </div>
+            <div class="dep-item">
+              <div class="dep-arrow">→</div>
+              <div class="dep-text"><strong>Copper</strong> is needed for dopamine-β-hydroxylase — the enzyme that converts dopamine to norepinephrine. Copper deficiency lowers norepinephrine, affecting focus, mood, and stress response. Zinc excess suppresses copper.</div>
+            </div>
+            <div class="dep-item">
+              <div class="dep-arrow">→</div>
+              <div class="dep-text"><strong>B3 (Niacin)</strong> via NAD⁺ is essential for serotonin synthesis — niacin and serotonin share the same tryptophan pathway. High niacin demand "steals" tryptophan away from serotonin production.</div>
+            </div>
+            <div class="dep-item">
+              <div class="dep-arrow">→</div>
+              <div class="dep-text"><strong>Zinc supplement form matters significantly.</strong> Zinc Bisglycinate and Zinc Picolinate are the best-absorbed forms (25–35% absorption). Zinc Citrate is moderate. Zinc Oxide — found in most cheap multivitamins — has only ~10% absorption and should be avoided. <strong>Always take zinc with food</strong> — on an empty stomach it reliably causes nausea and vomiting due to irritation of the gastric mucosa.</div>
+            </div>
+          </div>
+          <div class="deficiency-box">
+            <div class="deficiency-label">⚠ Pyroluria connection</div>
+            <div class="deficiency-text">A metabolic disorder called pyroluria causes excess urinary loss of both zinc and B6 simultaneously — resulting in severe mental health symptoms. Treating requires both nutrients together in high doses under medical supervision.</div>
+          </div>
+        </div>
+
+        <!-- CLUSTER 9: Omega-3 / Inflammation -->
+        <div class="cluster-card">
+          <div class="cluster-header">
+            <div class="cluster-icon bg-blue" style="border:1px solid rgba(74,144,217,0.3)">🐟</div>
+            <div class="cluster-meta">
+              <div class="cluster-name">Omega-3 & Inflammation</div>
+              <div class="cluster-tagline">EPA · DHA · Vitamin E · CRP · Triglycerides</div>
+            </div>
+          </div>
+          <div class="cluster-members">
+            <span class="member-tag bg-blue border-blue c-blue">EPA (Omega-3)</span>
+            <span class="member-tag bg-blue border-blue c-blue">DHA (Omega-3)</span>
+            <span class="member-tag bg-amber border-amber c-amber">Vitamin E</span>
+            <span class="member-tag bg-gold border-gold c-gold">Vitamin D3</span>
+            <span class="member-tag bg-purple border-purple c-purple">Magnesium</span>
+          </div>
+          <div class="cluster-body">
+            <div class="dep-item">
+              <div class="dep-arrow">→</div>
+              <div class="dep-text"><strong>Vitamin E must accompany Omega-3 supplementation.</strong> Fish oil (EPA/DHA) is a polyunsaturated fat — highly prone to oxidation inside the body. Vitamin E acts as an in-membrane antioxidant that prevents lipid peroxidation of the omega-3 molecules. High-dose fish oil without adequate Vitamin E increases oxidative stress rather than reducing it.</div>
+            </div>
+            <div class="dep-item">
+              <div class="dep-arrow">→</div>
+              <div class="dep-text"><strong>EPA reduces triglycerides</strong> via inhibiting VLDL assembly in the liver and activating PPAR-alpha (fat-burning pathway). 2–4g/day of EPA+DHA reduces serum triglycerides by 20–50% — one of the most evidence-backed supplement effects.</div>
+            </div>
+            <div class="dep-item">
+              <div class="dep-arrow">→</div>
+              <div class="dep-text"><strong>CRP elevation is a signal to evaluate D3, Magnesium, and Omega-3</strong> simultaneously. All three have meaningful anti-inflammatory evidence. High CRP also triggers Hepcidin — a hormone that sequesters iron and causes functional iron deficiency. Never interpret low serum iron in isolation — check CRP first.</div>
+            </div>
+            <div class="dep-item">
+              <div class="dep-arrow">→</div>
+              <div class="dep-text"><strong>DHA</strong> is the primary structural fat in brain cell membranes and the retina. It is not efficiently converted from ALA (plant omega-3 in flaxseed) — conversion rate is below 5% in most adults. Vegans must use algae-derived DHA directly.</div>
+            </div>
+          </div>
+          <div class="deficiency-box">
+            <div class="deficiency-label">⚠ Fish oil without Vitamin E</div>
+            <div class="deficiency-text">High-dose fish oil (3g+/day) without adequate Vitamin E can increase lipid peroxidation markers. Always ensure Vitamin E adequacy before high-dose omega-3 supplementation. Refrigerate fish oil capsules to slow oxidation.</div>
+          </div>
+        </div>
+
+        <!-- CLUSTER 10: Vitamin A + Zinc -->
+        <div class="cluster-card">
+          <div class="cluster-header">
+            <div class="cluster-icon bg-green" style="border:1px solid rgba(93,202,126,0.3)">👁️</div>
+            <div class="cluster-meta">
+              <div class="cluster-name">Vitamin A + Zinc Transport</div>
+              <div class="cluster-tagline">Vitamin A · Zinc · RBP · Vitamin D3</div>
+            </div>
+          </div>
+          <div class="cluster-members">
+            <span class="member-tag bg-green border-green c-green">Vitamin A</span>
+            <span class="member-tag bg-teal border-teal c-teal">Zinc</span>
+            <span class="member-tag bg-gold border-gold c-gold">Vitamin D3</span>
+            <span class="member-tag bg-rose border-rose c-rose">Iron</span>
+          </div>
+          <div class="cluster-body">
+            <div class="dep-item">
+              <div class="dep-arrow">→</div>
+              <div class="dep-text"><strong>Zinc produces Retinol-Binding Protein (RBP)</strong> — the transport protein that carries Vitamin A from the liver into the bloodstream to reach target tissues. Without adequate zinc, Vitamin A is synthesized and stored in the liver but cannot be mobilized or delivered. This means serum Vitamin A can appear falsely normal while tissues are functionally deficient.</div>
+            </div>
+            <div class="dep-item">
+              <div class="dep-arrow">→</div>
+              <div class="dep-text"><strong>Vitamin A and Vitamin D3 are antagonists at receptor level.</strong> Both bind to Retinoid X Receptor (RXR). At high doses, excess Vitamin A competes with D3 and blocks its genomic signaling. Conversely, excess D3 can reduce Vitamin A activity. The clinically safe ratio is approximately 5:1 (A:D3) in IU terms.</div>
+            </div>
+            <div class="dep-item">
+              <div class="dep-arrow">→</div>
+              <div class="dep-text"><strong>Zinc deficiency causes functional Vitamin A deficiency</strong> even in protein-sufficient, well-fed individuals. Correcting Vitamin A levels may require zinc repletion first — supplementing A alone without zinc may not raise tissue levels.</div>
+            </div>
+            <div class="dep-item">
+              <div class="dep-arrow">→</div>
+              <div class="dep-text"><strong>Vitamin A is required for iron utilization</strong> — it regulates transferrin receptor expression and supports red blood cell maturation. Anemia that fails to respond to iron supplementation may reflect underlying Vitamin A deficiency.</div>
+            </div>
+          </div>
+          <div class="deficiency-box">
+            <div class="deficiency-label">⚠ High-dose Vitamin A blocks D3</div>
+            <div class="deficiency-text">Taking Vitamin A supplements (retinol) above 10,000 IU/day while also supplementing D3 can negate D3's benefits. Preformed retinol (animal sources, cod liver oil) is the risk — beta-carotene from plants does not cause this antagonism.</div>
+          </div>
+        </div>
+
+        <!-- CLUSTER 11: Blood Sugar / Insulin -->
+        <div class="cluster-card">
+          <div class="cluster-header">
+            <div class="cluster-icon bg-amber" style="border:1px solid rgba(224,123,42,0.3)">🩺</div>
+            <div class="cluster-meta">
+              <div class="cluster-name">Blood Sugar & Insulin Sensitivity</div>
+              <div class="cluster-tagline">Magnesium · Chromium · Zinc · Berberine · B vitamins</div>
+            </div>
+          </div>
+          <div class="cluster-members">
+            <span class="member-tag bg-purple border-purple c-purple">Magnesium</span>
+            <span class="member-tag bg-green border-green c-green">Chromium</span>
+            <span class="member-tag bg-teal border-teal c-teal">Zinc</span>
+            <span class="member-tag bg-blue border-blue c-blue">B1 (Thiamine)</span>
+            <span class="member-tag bg-blue border-blue c-blue">B3 (Niacin)</span>
+          </div>
+          <div class="cluster-body">
+            <div class="dep-item">
+              <div class="dep-arrow">→</div>
+              <div class="dep-text"><strong>Magnesium is rate-limiting for insulin signaling.</strong> Magnesium deficiency directly impairs the insulin receptor's tyrosine kinase activity — the first step in glucose uptake. Meta-analyses show that correcting magnesium deficiency significantly improves insulin sensitivity and fasting glucose. Insulin resistance and magnesium deficiency create a vicious cycle: insulin resistance increases urinary magnesium loss, worsening the deficiency.</div>
+            </div>
+            <div class="dep-item">
+              <div class="dep-arrow">→</div>
+              <div class="dep-text"><strong>Chromium (as Chromodulin)</strong> amplifies insulin receptor signaling — it activates the same tyrosine kinase pathway that Magnesium supports. Chromium works with Niacin (B3) as a unit called GTF-Chromium (Glucose Tolerance Factor). Chromium picolinate is the best-studied supplemental form for blood sugar management.</div>
+            </div>
+            <div class="dep-item">
+              <div class="dep-arrow">→</div>
+              <div class="dep-text"><strong>Zinc is stored in pancreatic beta cells</strong> and is required for insulin synthesis, crystallization, and secretion. Zinc also binds to insulin hexamers, stabilizing them for storage. Low zinc is associated with impaired insulin release and elevated post-meal glucose.</div>
+            </div>
+            <div class="dep-item">
+              <div class="dep-arrow">→</div>
+              <div class="dep-text"><strong>Berberine</strong> activates AMPK (the same pathway as Metformin) and reduces hepatic glucose production. Clinical trials show it reduces fasting glucose and HbA1c comparably to Metformin in type 2 diabetes. It also improves lipid profiles. Key lab tests for this cluster: Fasting Glucose, HbA1c, Fasting Insulin, HOMA-IR.</div>
+            </div>
+          </div>
+          <div class="deficiency-box">
+            <div class="deficiency-label">⚠ Magnesium + insulin resistance feedback loop</div>
+            <div class="deficiency-text">Insulin resistance → increases renal magnesium excretion → worsens magnesium deficiency → further impairs insulin signaling. Breaking this cycle with Magnesium Glycinate (200–400mg/day) can improve insulin sensitivity independently of diet or exercise changes.</div>
+          </div>
+        </div>
+
+        <!-- CLUSTER 12: Lipid Panel -->
+        <div class="cluster-card">
+          <div class="cluster-header">
+            <div class="cluster-icon bg-rose" style="border:1px solid rgba(212,93,93,0.3)">💛</div>
+            <div class="cluster-meta">
+              <div class="cluster-name">Lipid Panel & Supplement Links</div>
+              <div class="cluster-tagline">Omega-3 · Niacin (B3) · CoQ10 · Plant Sterols · Berberine</div>
+            </div>
+          </div>
+          <div class="cluster-members">
+            <span class="member-tag bg-blue border-blue c-blue">EPA / DHA</span>
+            <span class="member-tag bg-blue border-blue c-blue">Niacin (B3)</span>
+            <span class="member-tag bg-amber border-amber c-amber">CoQ10</span>
+            <span class="member-tag bg-green border-green c-green">Plant Sterols</span>
+            <span class="member-tag bg-green border-green c-green">Berberine</span>
+          </div>
+          <div class="cluster-body">
+            <div class="dep-item">
+              <div class="dep-arrow">→</div>
+              <div class="dep-text"><strong>High Triglycerides → EPA/DHA (Omega-3).</strong> 2–4g/day of EPA+DHA is the most effective natural intervention for elevated triglycerides, reducing them by 20–50%. Prescription Omega-3 (Vascepa/icosapentaenoic acid) is FDA-approved for hypertriglyceridemia. Always pair with Vitamin E.</div>
+            </div>
+            <div class="dep-item">
+              <div class="dep-arrow">→</div>
+              <div class="dep-text"><strong>Low HDL → Niacin (B3) + Omega-3.</strong> Flush niacin (nicotinic acid) at 1–3g/day is the most potent natural HDL-raising intervention (+15–35%). This creates a direct metabolic bridge between the B-Complex cluster and cardiovascular lipid management — B3 is simultaneously a methylation cofactor and a lipid-modifying nutrient.</div>
+            </div>
+            <div class="dep-item">
+              <div class="dep-arrow">→</div>
+              <div class="dep-text"><strong>High LDL → Plant Sterols + Berberine.</strong> Plant sterols (2g/day) reduce LDL by 10–15% by competing with cholesterol for intestinal absorption. Berberine reduces LDL by upregulating LDL receptors in the liver (similar mechanism to statins, without depleting CoQ10).</div>
+            </div>
+            <div class="dep-item">
+              <div class="dep-arrow">→</div>
+              <div class="dep-text"><strong>Statin use → CoQ10 depletion is near-certain.</strong> Statins block HMG-CoA reductase in the mevalonate pathway — the same pathway that produces both cholesterol and CoQ10. CoQ10 depletion causes statin-induced myopathy, fatigue, and mitochondrial dysfunction. Supplement 100–200mg CoQ10 daily with any statin.</div>
+            </div>
+          </div>
+          <div class="deficiency-box">
+            <div class="deficiency-label">⚠ Niacin + Statin combination</div>
+            <div class="deficiency-text">High-dose flush niacin combined with statins can increase risk of myopathy (muscle damage). This combination should only be used under medical supervision with regular CK (creatine kinase) monitoring.</div>
+          </div>
+        </div>
+
+        <!-- CLUSTER 13: CoQ10 / Mitochondrial -->
+        <div class="cluster-card">
+          <div class="cluster-header">
+            <div class="cluster-icon bg-gold" style="border:1px solid rgba(212,168,67,0.3)">⚡</div>
+            <div class="cluster-meta">
+              <div class="cluster-name">CoQ10 & Mitochondrial Energy</div>
+              <div class="cluster-tagline">CoQ10 · Vitamin E · Selenium · B2 · Iron · Statins</div>
+            </div>
+          </div>
+          <div class="cluster-members">
+            <span class="member-tag bg-gold border-gold c-gold">CoQ10 (Ubiquinol)</span>
+            <span class="member-tag bg-amber border-amber c-amber">Vitamin E</span>
+            <span class="member-tag bg-teal border-teal c-teal">Selenium</span>
+            <span class="member-tag bg-blue border-blue c-blue">B2 (Riboflavin)</span>
+            <span class="member-tag bg-rose border-rose c-rose">Iron</span>
+          </div>
+          <div class="cluster-body">
+            <div class="dep-item">
+              <div class="dep-arrow">→</div>
+              <div class="dep-text"><strong>CoQ10 (Ubiquinol form)</strong> is the electron carrier in the mitochondrial electron transport chain (Complexes I–III). It is the central molecule of cellular energy production — without it, ATP synthesis from food cannot occur efficiently. The reduced form Ubiquinol is both the active form in the ETC and a potent fat-soluble antioxidant.</div>
+            </div>
+            <div class="dep-item">
+              <div class="dep-arrow">→</div>
+              <div class="dep-text"><strong>Statins block CoQ10 synthesis via mevalonate pathway inhibition.</strong> This is not a side effect — it is a direct biochemical consequence. Every patient on a statin is losing CoQ10. Muscle pain, fatigue, brain fog, and exercise intolerance on statins are often CoQ10 depletion symptoms. Ubiquinol 100–200mg/day is the preferred form for those over 40.</div>
+            </div>
+            <div class="dep-item">
+              <div class="dep-arrow">→</div>
+              <div class="dep-text"><strong>Vitamin E and CoQ10 are synergistic membrane antioxidants.</strong> CoQ10 regenerates Vitamin E inside mitochondrial membranes. Together, they protect mitochondrial lipids from oxidative damage. Selenium (via glutathione peroxidase) provides a third layer of protection in the cytoplasm.</div>
+            </div>
+            <div class="dep-item">
+              <div class="dep-arrow">→</div>
+              <div class="dep-text"><strong>B2 (Riboflavin) is a structural component</strong> of FAD — the cofactor for Complex I and II of the electron transport chain. Riboflavin deficiency directly impairs mitochondrial function and reduces CoQ10 efficiency. B2 is also required to recycle glutathione, completing the antioxidant loop.</div>
+            </div>
+          </div>
+          <div class="deficiency-box">
+            <div class="deficiency-label">⚠ Ubiquinone vs Ubiquinol — form matters after 40</div>
+            <div class="deficiency-text">Ubiquinone (CoQ10 oxidized form) must be converted to Ubiquinol by the body. This conversion declines significantly with age and in those with chronic illness. Those over 40, on statins, or with mitochondrial conditions should supplement directly with Ubiquinol — the active, pre-reduced form.</div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+  <!-- ===== VITAMINS ===== -->
+  <div id="vitamins" class="section">
+    <div class="section-inner">
+      <div class="section-header">
+        <h2>Vitamins — Complete Reference</h2>
+        <p>All 13 essential vitamins with functions, key deficiency signs, codependencies, and primary food sources.</p>
+      </div>
+      <div class="vitamins-grid" id="vitaminsGrid"></div>
+    </div>
+  </div>
+
+  <!-- ===== MINERALS ===== -->
+  <div id="minerals" class="section">
+    <div class="section-inner">
+      <div class="section-header">
+        <h2>Minerals — Complete Reference</h2>
+        <p>Essential macro and trace minerals with their roles, interdependencies, and best food sources.</p>
+      </div>
+      <div class="minerals-grid" id="mineralsGrid"></div>
+    </div>
+  </div>
+
+  <!-- ===== DEFICIENCY CHAINS ===== -->
+  <div id="chains" class="section">
+    <div class="section-inner">
+      <div class="section-header">
+        <h2>Deficiency Cascade Chains</h2>
+        <p>How a single nutrient deficiency cascades into multiple downstream failures — the hidden cost of nutritional gaps.</p>
+      </div>
+      <div class="chain-list" id="chainList"></div>
+    </div>
+  </div>
+
+  <!-- ===== SOURCES ===== -->
+  <div id="sources" class="section">
+    <div class="section-inner">
+      <div class="section-header">
+        <h2>Food Sources Atlas</h2>
+        <p>The best dietary sources for every essential vitamin and mineral, ranked by bioavailability and density.</p>
+      </div>
+
+      <div class="notice">
+        <span class="notice-icon">💡</span>
+        <span><strong>Bioavailability note:</strong> The form of a nutrient in food matters enormously. Heme iron (meat) absorbs at 15–35%; non-heme iron (plants) at 2–20%. Animal Vitamin A (retinol) is directly usable; plant beta-carotene conversion varies widely. Magnesium from leafy greens is highly bioavailable; from supplements, glycinate and malate forms outperform oxide.</span>
+      </div>
+
+      <div id="sourcesContent"></div>
+    </div>
+  </div>
+
+  <!-- ===== TIPS ===== -->
+  <div id="tips" class="section">
+    <div class="section-inner">
+      <div class="section-header">
+        <h2>Supplementing Smart</h2>
+        <p>Evidence-based principles for supplementation timing, stacking, and avoiding common pitfalls. <button onclick="openCitations()" style="font-family:'DM Mono',monospace;font-size:11px;padding:4px 12px;border-radius:6px;border:1px solid var(--border2);background:var(--surface2);color:var(--blue2);cursor:pointer;margin-left:8px;">📚 View Citations</button></p>
+      </div>
+      <div class="tips-grid" id="tipsGrid"></div>
+    </div>
+  </div>
+
+  <!-- ===== LAB TESTS ===== -->
+  <div id="labtests" class="section">
+    <div class="section-inner">
+      <div class="section-header">
+        <h2>🇮🇳 Lab Tests in India</h2>
+        <p>Which blood tests to get, what the results mean, optimal ranges, and direct links to book from India's top accredited labs — individual tests and value packages.</p>
+      </div>
+      <div id="labTestsContent"></div>
+    </div>
+  </div>
+
+</main>
+
+<script>
+// ===== DATA =====
+
+const vitamins = [
+  {
+    symbol: "A", fullName: "Vitamin A (Retinol)", aka: "Retinol / Beta-Carotene",
+    colorClass: "bg-green", borderClass: "border-green", textClass: "c-green",
+    function: "Vision (rhodopsin synthesis), immune cell differentiation, epithelial integrity, gene expression regulation, iron mobilization from storage.",
+    deficiency: "Night blindness, impaired immunity, dry skin, poor wound healing, increased infection susceptibility.",
+    sources: ["🐄 Beef liver", "🐟 Cod liver oil", "🥚 Eggs", "🧈 Butter", "🫐 Sweet potato (beta-carotene)", "🥕 Carrot (beta-carotene)", "🌿 Kale (beta-carotene)"],
+    codeps: ["D3", "K2", "Zinc", "Iron", "Vitamin E"],
+    notes: "Plant beta-carotene requires conversion to retinol — ~45% of people are poor converters. Animal retinol is directly bioavailable. Fat required for absorption.",
+    dose: "RDA: 700–900 mcg RAE/day. Toxicity possible above 3,000 mcg/day (retinol form only)."
+  },
+  {
+    symbol: "B1", fullName: "Vitamin B1 (Thiamine)", aka: "Thiamine",
+    colorClass: "bg-blue", borderClass: "border-blue", textClass: "c-blue",
+    function: "Converts carbohydrates, fats, and proteins into ATP (energy). Essential for nerve signal transmission, heart function, and acetylcholine synthesis.",
+    deficiency: "Beriberi (nerve/heart damage), Wernicke's encephalopathy (brain damage, seen in alcoholism), peripheral neuropathy, fatigue.",
+    sources: ["🐷 Pork", "🥩 Organ meats", "🌻 Sunflower seeds", "🫘 Black beans", "🌾 Whole grains", "🐟 Trout", "🥬 Asparagus"],
+    codeps: ["Magnesium", "B2", "B3", "B5", "B12"],
+    notes: "Alcohol, raw fish (thiaminase enzyme), and high carbohydrate intake dramatically increase thiamine requirements.",
+    dose: "RDA: 1.1–1.2 mg/day. Higher needs in alcoholism, diabetes, heart failure."
+  },
+  {
+    symbol: "B2", fullName: "Vitamin B2 (Riboflavin)", aka: "Riboflavin",
+    colorClass: "bg-blue", borderClass: "border-blue", textClass: "c-blue",
+    function: "Component of FAD and FMN — electron carriers in the mitochondrial respiratory chain. Activates B6, B9, and B12. Supports glutathione recycling and iron metabolism.",
+    deficiency: "Cracked lips (cheilosis), inflamed tongue, eye sensitivity to light, poor growth, anemia, neurological issues.",
+    sources: ["🥩 Beef liver", "🥛 Milk", "🧀 Cheese", "🥚 Eggs", "🌰 Almonds", "🐟 Salmon", "🌿 Spinach"],
+    codeps: ["B6 (activates it)", "B9 (MTHFR)", "Glutathione", "Iron"],
+    notes: "Critical for MTHFR enzyme function — especially important for those with MTHFR gene variants. Light-sensitive; milk in opaque containers retains more riboflavin.",
+    dose: "RDA: 1.1–1.3 mg/day."
+  },
+  {
+    symbol: "B3", fullName: "Vitamin B3 (Niacin)", aka: "Niacin / Nicotinamide / Nicotinic Acid",
+    colorClass: "bg-blue", borderClass: "border-blue", textClass: "c-blue",
+    function: "Forms NAD⁺ and NADP⁺ — essential for 400+ enzymatic reactions, energy metabolism, DNA repair, cell signaling, cholesterol management, and sirtuin activation.",
+    deficiency: "Pellagra (4 Ds: dermatitis, diarrhea, dementia, death), fatigue, depression, poor concentration.",
+    sources: ["🐟 Tuna", "🐔 Chicken breast", "🥩 Turkey", "🥜 Peanuts", "🌻 Sunflower seeds", "🍄 Mushrooms", "🥦 Avocado"],
+    codeps: ["Tryptophan (precursor)", "B2 (for conversion)", "B6", "Magnesium"],
+    notes: "Tryptophan (an amino acid) can be converted to niacin at ~60:1 ratio. High niacin demand competes with serotonin synthesis for tryptophan. Niacinamide form doesn't cause flushing.",
+    dose: "RDA: 14–16 mg/day. Therapeutic doses (flush niacin for cholesterol): 1,000–3,000 mg under medical supervision."
+  },
+  {
+    symbol: "B5", fullName: "Vitamin B5 (Pantothenic Acid)", aka: "Pantothenate",
+    colorClass: "bg-blue", borderClass: "border-blue", textClass: "c-blue",
+    function: "Core component of Coenzyme A (CoA) — required for fatty acid synthesis, oxidation, carbohydrate/protein metabolism, steroid hormone production, and acetylcholine synthesis.",
+    deficiency: "Rare in isolation. Burning feet syndrome, fatigue, irritability, sleep disturbances, GI distress.",
+    sources: ["🥩 Beef liver", "🍄 Shiitake mushrooms", "🥑 Avocado", "🐟 Salmon", "🌻 Sunflower seeds", "🫙 Yogurt", "🥦 Broccoli"],
+    codeps: ["B1", "B2", "B3", "B7 (Biotin)", "CoA synthesis"],
+    notes: "Pantothenic acid is named from the Greek 'pantos' meaning 'from everywhere' — it is widespread in nearly all foods.",
+    dose: "AI: 5 mg/day."
+  },
+  {
+    symbol: "B6", fullName: "Vitamin B6 (Pyridoxine)", aka: "Pyridoxine / P5P (active form)",
+    colorClass: "bg-blue", borderClass: "border-blue", textClass: "c-blue",
+    function: "Cofactor in 100+ enzymatic reactions: neurotransmitter synthesis (serotonin, dopamine, GABA, melatonin), amino acid metabolism, glycogen breakdown, heme synthesis, immune function.",
+    deficiency: "Depression, anxiety, insomnia, peripheral neuropathy, anemia, poor immune function, elevated homocysteine.",
+    sources: ["🐟 Tuna / Salmon", "🐔 Chicken", "🍌 Banana", "🥔 Potato", "🌰 Pistachios", "🥩 Beef liver", "🫐 Chickpeas"],
+    codeps: ["B12", "B9 (folate)", "Zinc (needed to convert B6 to P5P)", "Magnesium", "B2"],
+    notes: "The active form P5P (pyridoxal-5-phosphate) bypasses conversion steps — better for those with liver dysfunction or MTHFR issues. High-dose pyridoxine (not P5P) can cause neuropathy.",
+    dose: "RDA: 1.3–1.7 mg/day. Therapeutic P5P doses should be under medical guidance."
+  },
+  {
+    symbol: "B7", fullName: "Vitamin B7 (Biotin)", aka: "Biotin / Vitamin H",
+    colorClass: "bg-blue", borderClass: "border-blue", textClass: "c-blue",
+    function: "Cofactor for 5 carboxylase enzymes: fatty acid synthesis, gluconeogenesis, amino acid catabolism, gene expression regulation, and CO₂ transfer reactions.",
+    deficiency: "Hair thinning/loss, brittle nails, scaly skin rash, neurological symptoms, elevated blood glucose.",
+    sources: ["🥩 Beef liver", "🥚 Eggs (cooked)", "🐟 Salmon", "🌻 Sunflower seeds", "🥜 Peanuts", "🧀 Cheese", "🍠 Sweet potato"],
+    codeps: ["B5 (pantothenic acid)", "Zinc", "Magnesium"],
+    notes: "Raw egg whites contain avidin, a protein that binds biotin and prevents absorption — cooking destroys avidin. Biotin supplements interfere with many lab tests (thyroid, troponin).",
+    dose: "AI: 30 mcg/day."
+  },
+  {
+    symbol: "B9", fullName: "Vitamin B9 (Folate)", aka: "Folate / Folic Acid / 5-MTHF",
+    colorClass: "bg-blue", borderClass: "border-blue", textClass: "c-blue",
+    function: "DNA synthesis and repair, cell division, amino acid metabolism, methylation reactions, neural tube formation (fetal development), red blood cell formation.",
+    deficiency: "Neural tube defects (in pregnancy), megaloblastic anemia, elevated homocysteine, poor cognitive function, depression.",
+    sources: ["🥬 Spinach", "🫘 Lentils", "🥦 Broccoli", "🥑 Avocado", "🧆 Chickpeas", "🥩 Beef liver", "🥚 Eggs", "🌿 Asparagus"],
+    codeps: ["B12 (to activate folate)", "B6", "B2 (MTHFR)", "Zinc"],
+    notes: "Folic acid (synthetic) must be converted to 5-MTHF (active folate) — but MTHFR gene variants impair this. Prefer methylfolate supplements (5-MTHF). High folic acid masks B12 deficiency.",
+    dose: "RDA: 400 mcg DFE/day. 600 mcg during pregnancy."
+  },
+  {
+    symbol: "B12", fullName: "Vitamin B12 (Cobalamin)", aka: "Cyanocobalamin / Methylcobalamin / Adenosylcobalamin",
+    colorClass: "bg-blue", borderClass: "border-blue", textClass: "c-blue",
+    function: "DNA synthesis, myelin sheath maintenance (nerve protection), red blood cell formation, methylation, conversion of methylmalonyl-CoA to succinyl-CoA (energy), folate activation.",
+    deficiency: "Megaloblastic anemia, peripheral neuropathy, subacute combined degeneration of spinal cord, cognitive decline, depression, elevated homocysteine.",
+    sources: ["🦀 Clams", "🥩 Beef liver", "🐟 Sardines / Salmon", "🥩 Beef", "🥛 Dairy", "🥚 Eggs", "🫙 Nutritional yeast (fortified)"],
+    codeps: ["B9 (folate)", "B6", "Intrinsic Factor", "Calcium (for absorption via IF receptor)"],
+    notes: "Vegans and vegetarians are at high risk of deficiency — B12 is almost exclusively in animal foods. Methylcobalamin or adenosylcobalamin are preferred over cyanocobalamin. Requires Intrinsic Factor (stomach protein) for absorption.",
+    dose: "RDA: 2.4 mcg/day. Absorption is saturated at ~1.5 mcg; passive absorption allows higher doses via sublingual."
+  },
+  {
+    symbol: "C", fullName: "Vitamin C (Ascorbic Acid)", aka: "L-Ascorbic Acid",
+    colorClass: "bg-amber", borderClass: "border-amber", textClass: "c-amber",
+    function: "Antioxidant, collagen synthesis (hydroxylation of proline/lysine), iron absorption enhancement, immune cell function, neurotransmitter synthesis (norepinephrine), Vitamin E regeneration.",
+    deficiency: "Scurvy (joint pain, bleeding gums, poor wound healing), fatigue, impaired immunity, easy bruising.",
+    sources: ["🌶️ Red bell pepper", "🥝 Kiwi", "🍊 Citrus", "🍓 Strawberries", "🥦 Broccoli", "🌿 Parsley", "🍍 Papaya", "🫐 Guava"],
+    codeps: ["Iron (absorption)", "Vitamin E (regeneration)", "Copper (modulates)", "Glutathione"],
+    notes: "Water-soluble; not stored in body. Humans cannot synthesize Vitamin C (we lost the GULO enzyme). Smokers need 35 mg/day extra. Very high dose C (>1g) can reduce copper absorption.",
+    dose: "RDA: 75–90 mg/day. Many researchers suggest 200–500 mg for optimal tissue saturation."
+  },
+  {
+    symbol: "D3", fullName: "Vitamin D3 (Cholecalciferol)", aka: "Cholecalciferol / Calcitriol (active)",
+    colorClass: "bg-gold", borderClass: "border-gold", textClass: "c-gold",
+    function: "Calcium and phosphorus absorption, bone mineralization, immune regulation (T-cell modulation), insulin secretion, cardiovascular function, gene expression (1,000+ genes).",
+    deficiency: "Rickets (children), osteomalacia/osteoporosis, impaired immunity, depression, muscle weakness, increased cancer and autoimmune disease risk.",
+    sources: ["☀️ Sunlight (UVB on skin)", "🐟 Fatty fish (mackerel, salmon)", "🥩 Beef liver", "🥚 Egg yolks", "🍄 UV-exposed mushrooms", "🐟 Cod liver oil"],
+    codeps: ["K2 (calcium direction)", "Magnesium (activation)", "Calcium", "Zinc", "Vitamin A (balance)"],
+    notes: "Synthesized in skin from UVB light — requires 15–30 min midday sun on large skin area. Dark skin, sunscreen, aging, and latitude all reduce synthesis. Blood test (25-OH-D) recommended; optimal level ~40–60 ng/mL.",
+    dose: "RDA: 600–800 IU. Many clinicians use 2,000–5,000 IU/day. Test regularly."
+  },
+  {
+    symbol: "E", fullName: "Vitamin E (Tocopherol)", aka: "Alpha-Tocopherol (8 forms total)",
+    colorClass: "bg-amber", borderClass: "border-amber", textClass: "c-amber",
+    function: "Fat-soluble antioxidant protecting cell membranes from lipid peroxidation. Immune signaling, platelet aggregation regulation, gene expression, protects polyunsaturated fatty acids.",
+    deficiency: "Rare; seen in fat malabsorption syndromes. Peripheral neuropathy, muscle weakness, immune dysfunction, retinal degeneration.",
+    sources: ["🌻 Sunflower seeds", "🌰 Almonds", "🫒 Wheat germ oil", "🌻 Sunflower oil", "🥜 Peanut butter", "🌿 Spinach", "🥦 Broccoli"],
+    codeps: ["Vitamin C (regenerates E)", "Selenium (spares E)", "CoQ10 (synergistic)", "Zinc", "Vitamin K (antagonist at high E)"],
+    notes: "All 8 forms (4 tocopherols + 4 tocotrienols) have distinct roles. Synthetic d,l-alpha-tocopherol has only 50% activity of natural d-alpha-tocopherol. Protects omega-3s from oxidation — important when supplementing fish oil.",
+    dose: "RDA: 15 mg/day. Upper limit: 1,000 mg/day (increased bleeding risk above this)."
+  },
+  {
+    symbol: "K2", fullName: "Vitamin K2 (Menaquinone)", aka: "Phylloquinone (K1) / Menaquinone (K2) — MK-4, MK-7",
+    colorClass: "bg-rose", borderClass: "border-rose", textClass: "c-rose",
+    function: "Activates osteocalcin (calcium deposition into bone), activates Matrix GLA Protein (removes calcium from arteries), involved in blood clotting, cell growth regulation.",
+    deficiency: "Increased arterial calcification, poor bone density, increased fracture risk, poor blood clotting.",
+    sources: ["🫘 Natto (fermented soy — highest K2)", "🧀 Hard cheeses (gouda)", "🥩 Goose liver paste", "🥩 Grass-fed meat", "🧈 Butter/Ghee (grass-fed)", "🥚 Egg yolks", "🥬 Fermented vegetables"],
+    codeps: ["D3 (calcium traffic partner)", "Calcium", "Magnesium", "Vitamin A", "Vitamin E (antagonist in excess)"],
+    notes: "K1 (phylloquinone) from leafy greens primarily supports clotting. K2 MK-7 (from fermented foods) has the longest half-life and most potent bone/artery benefits. Warfarin blocks all K — patients on warfarin should not supplement K without supervision.",
+    dose: "No established RDA. Common therapeutic range: 100–200 mcg MK-7/day."
+  }
+];
+
+const minerals = [
+  {
+    symbol: "Mg", fullName: "Magnesium", colorClass: "bg-purple", borderClass: "border-purple", textClass: "c-purple",
+    function: "Cofactor for 300+ enzymes. ATP activation, protein synthesis, muscle and nerve function, blood glucose control, blood pressure regulation, Vitamin D activation, DNA repair.",
+    deficiency: "Muscle cramps/spasms, anxiety, insomnia, constipation, migraine, high blood pressure, poor Vitamin D response, cardiac arrhythmia.",
+    sources: ["🥬 Dark leafy greens (spinach)", "🎃 Pumpkin seeds", "🍫 Dark chocolate (70%+)", "🥑 Avocado", "🍌 Banana", "🌰 Almonds/Cashews", "🫘 Black beans", "🐟 Mackerel"],
+    codeps: ["Vitamin D (activation)", "B6 (cellular transport)", "Potassium (pump function)", "Calcium (balance)", "ATP"],
+    notes: "Most bioavailable forms: glycinate (sleep/anxiety), malate (energy/pain), threonate (brain). Avoid oxide — low absorption. Up to 50% of the population is below recommended intake.",
+    dose: "RDA: 310–420 mg/day."
+  },
+  {
+    symbol: "Ca", fullName: "Calcium", colorClass: "bg-blue", borderClass: "border-blue", textClass: "c-blue",
+    function: "Bone and tooth structure (99% stored there), muscle contraction, nerve signal transmission, blood clotting, enzyme activation, cell signaling.",
+    deficiency: "Osteoporosis, muscle cramps, poor dental health, cardiac arrhythmia, hypocalcemic tetany.",
+    sources: ["🥛 Dairy (milk, yogurt, cheese)", "🐟 Sardines (with bones)", "🥬 Kale / Collard greens", "🫘 White beans", "🐚 Oysters", "🌰 Almonds", "🥦 Broccoli", "🍊 Fortified OJ"],
+    codeps: ["D3 (absorption ↑20×)", "K2 (directs to bone)", "Magnesium (balance, competes)", "Phosphorus", "Vitamin A"],
+    notes: "Calcium carbonate requires stomach acid for absorption — take with food. Calcium citrate absorbs without acid — better for those on PPIs. Excess calcium without K2 increases arterial calcification risk.",
+    dose: "RDA: 1,000–1,200 mg/day."
+  },
+  {
+    symbol: "Fe", fullName: "Iron", colorClass: "bg-rose", borderClass: "border-rose", textClass: "c-rose",
+    function: "Hemoglobin synthesis (oxygen transport), myoglobin (muscle oxygen storage), electron transport chain, thyroid peroxidase, dopamine/serotonin synthesis, immune cell production.",
+    deficiency: "Iron deficiency anemia (fatigue, pallor, shortness of breath), poor cognitive function, impaired thyroid function, restless leg syndrome, cold intolerance.",
+    sources: ["🥩 Beef liver (heme iron)", "🐚 Oysters (heme iron)", "🥩 Red meat (heme iron)", "🫘 Lentils (non-heme)", "🌿 Spinach (non-heme)", "🍫 Dark chocolate", "🥜 Pumpkin seeds"],
+    codeps: ["Vitamin C (↑absorption)", "Copper (mobilization)", "Vitamin A (storage)", "Zinc (competes — take separately)"],
+    notes: "Heme iron (from meat) absorbs at 15–35%. Non-heme iron (plants): 2–20%, greatly enhanced by Vitamin C. Calcium, tannins (tea/coffee), and phytates (grains) all reduce iron absorption. Excess iron is pro-oxidant — test ferritin before supplementing.",
+    dose: "RDA: 8 mg (men), 18 mg (premenopausal women), 27 mg (pregnancy)."
+  },
+  {
+    symbol: "Zn", fullName: "Zinc", colorClass: "bg-teal", borderClass: "border-teal", textClass: "c-teal",
+    function: "Cofactor for 300+ enzymes, immune function, protein/DNA synthesis, wound healing, taste/smell, testosterone production, conversion of B6 to P5P, insulin storage.",
+    deficiency: "Impaired immunity, poor wound healing, hair loss, loss of taste/smell, hypogonadism, growth retardation, dermatitis, depression.",
+    sources: ["🐚 Oysters (highest)", "🥩 Beef", "🐔 Pumpkin seeds", "🌻 Hemp seeds", "🫘 Lentils", "🥛 Dairy", "🌰 Cashews", "🍫 Dark chocolate"],
+    codeps: ["Copper (antagonist — 8:1 ratio)", "Iron (competes)", "B6 (needed to activate B6→P5P)", "Vitamin A", "Selenium"],
+    notes: "Phytates in grains and legumes bind zinc — soaking/sprouting increases absorption. Vegetarians have higher zinc requirements. Zinc >40 mg/day without copper causes copper deficiency.",
+    dose: "RDA: 8–11 mg/day. Max tolerable: 40 mg/day."
+  },
+  {
+    symbol: "Se", fullName: "Selenium", colorClass: "bg-teal", borderClass: "border-teal", textClass: "c-teal",
+    function: "Antioxidant via glutathione peroxidase, iodothyronine deiodinases (T4→T3 conversion), DNA synthesis, immune function, male fertility (spermogenesis), heavy metal detox.",
+    deficiency: "Keshan disease (heart disease), Kashin-Beck disease (osteoarthropathy), impaired thyroid function, poor antioxidant defense, male infertility.",
+    sources: ["🌰 Brazil nuts (1–2 nuts = daily dose)", "🐟 Yellowfin tuna", "🦐 Shrimp", "🥩 Beef", "🐔 Turkey", "🥚 Eggs", "🌾 Whole grains"],
+    codeps: ["Iodine (thyroid)", "Vitamin E (synergistic antioxidant)", "Glutathione", "Zinc"],
+    notes: "Soil selenium content varies enormously by region — people in low-selenium areas may need supplementation. 1–2 Brazil nuts provide the full daily dose (~55 mcg). Toxicity occurs above 400 mcg/day.",
+    dose: "RDA: 55 mcg/day. Upper limit: 400 mcg/day."
+  },
+  {
+    symbol: "I", fullName: "Iodine", colorClass: "bg-teal", borderClass: "border-teal", textClass: "c-teal",
+    function: "Essential component of thyroid hormones T3 and T4, which regulate metabolic rate, growth, brain development (fetal), body temperature, and protein synthesis.",
+    deficiency: "Goiter (thyroid enlargement), hypothyroidism, cretinism (severe fetal deficiency), cognitive impairment, fatigue.",
+    sources: ["🌿 Seaweed (kelp — very high)", "🦞 Cod / Seafood", "🥛 Dairy", "🥚 Eggs", "🧂 Iodized salt", "🍠 Potatoes (with skin)"],
+    codeps: ["Selenium (T4→T3 conversion)", "Iron (thyroid peroxidase)", "Zinc", "Vitamin D"],
+    notes: "Goitrogenic foods (raw cruciferous vegetables, soy) can interfere with iodine utilization in the thyroid — cooking largely deactivates goitrogens. Do not supplement high-dose iodine without selenium.",
+    dose: "RDA: 150 mcg/day. Pregnancy: 220 mcg/day."
+  },
+  {
+    symbol: "K⁺", fullName: "Potassium", colorClass: "bg-green", borderClass: "border-green", textClass: "c-green",
+    function: "Electrolyte — maintains cellular resting potential, heart rhythm, muscle contraction, nerve transmission, blood pressure regulation, kidney function, glycogen/protein synthesis.",
+    deficiency: "Hypokalemia: muscle weakness/cramps, constipation, cardiac arrhythmia, fatigue, elevated blood pressure.",
+    sources: ["🍌 Banana", "🥔 Potato (with skin)", "🥬 Spinach / Beet greens", "🧆 Lentils / White beans", "🥑 Avocado", "🍠 Sweet potato", "🐟 Salmon", "🫙 Yogurt"],
+    codeps: ["Magnesium (Na⁺/K⁺-ATPase pump — potassium supplementation fails without Mg)", "Sodium (balance)", "B6 (cellular uptake)"],
+    notes: "Refractory hypokalemia (potassium that won't correct with supplements) is almost always caused by magnesium deficiency. Fix magnesium first. High sodium intake increases potassium excretion.",
+    dose: "AI: 2,600–3,400 mg/day. Most Western diets are deficient."
+  },
+  {
+    symbol: "Na", fullName: "Sodium", colorClass: "bg-amber", borderClass: "border-amber", textClass: "c-amber",
+    function: "Primary extracellular cation. Fluid balance, nerve impulse transmission, muscle contraction, nutrient absorption in gut, blood pressure.",
+    deficiency: "Hyponatremia: nausea, headache, confusion, seizures, coma. Common in endurance athletes (overhydration).",
+    sources: ["🧂 Table salt", "🫙 Pickled/fermented foods", "🥩 Processed meats", "🧀 Cheese", "🍞 Bread"],
+    codeps: ["Potassium (inverse relationship)", "Magnesium (pump)", "Chloride (co-ion)"],
+    notes: "The sodium:potassium ratio matters more than absolute sodium. High sodium with low potassium is the cardiovascular risk driver — not sodium alone. Low-carb/ketogenic diets increase sodium excretion.",
+    dose: "AI: 1,500 mg/day. Upper limit: 2,300 mg/day."
+  },
+  {
+    symbol: "Cu", fullName: "Copper", colorClass: "bg-amber", borderClass: "border-amber", textClass: "c-amber",
+    function: "Ceruloplasmin (iron transport), dopamine-β-hydroxylase (dopamine→norepinephrine), cytochrome c oxidase (mitochondrial energy), collagen crosslinking, antioxidant (SOD), melanin synthesis.",
+    deficiency: "Anemia (iron-resistant), neuropathy (mimics B12 deficiency), poor immune function, depigmentation, cardiovascular disease.",
+    sources: ["🐚 Oysters (extremely high)", "🫘 Sesame seeds / tahini", "🍫 Dark chocolate", "🥜 Cashews", "🥩 Beef liver", "🦀 Crab", "🌿 Spirulina"],
+    codeps: ["Iron (ceruloplasmin function)", "Zinc (antagonist — monitor ratio)", "Vitamin C (high doses reduce copper)"],
+    notes: "Zinc supplementation above 40 mg/day consistently depletes copper. Zinc:copper ratio should be maintained at ~8:1. Many multivitamins contain inadequate copper. Copper IUDs can increase body copper.",
+    dose: "RDA: 900 mcg/day."
+  },
+  {
+    symbol: "Mn", fullName: "Manganese", colorClass: "bg-amber", borderClass: "border-amber", textClass: "c-amber",
+    function: "Cofactor for arginase (urea cycle), mitochondrial superoxide dismutase (MnSOD — antioxidant), bone formation, carbohydrate metabolism, thyroid hormone synthesis.",
+    deficiency: "Rare. Poor bone density, impaired glucose tolerance, altered lipid metabolism, reproductive dysfunction.",
+    sources: ["🌾 Whole grains", "🍵 Tea (high source)", "🫘 Legumes", "🌰 Nuts and seeds", "🍍 Pineapple", "🥦 Dark leafy greens"],
+    codeps: ["Iron (competes for absorption)", "Zinc", "Calcium"],
+    notes: "Iron and manganese share the same DMT1 transporter — iron deficiency increases manganese absorption and vice versa. Most people get adequate manganese from whole grains.",
+    dose: "AI: 1.8–2.3 mg/day."
+  },
+  {
+    symbol: "Cr", fullName: "Chromium", colorClass: "bg-green", borderClass: "border-green", textClass: "c-green",
+    function: "Potentiates insulin signaling (enhances insulin receptor binding), glucose metabolism, lipid metabolism, protein synthesis.",
+    deficiency: "Impaired glucose tolerance, insulin resistance, elevated blood lipids. Difficult to diagnose — no reliable biomarker.",
+    sources: ["🥦 Broccoli (highest)", "🥩 Beef", "🦐 Shrimp", "🌾 Whole grains", "🫙 Nutritional yeast", "🍇 Grape juice", "🥚 Eggs"],
+    codeps: ["Insulin", "Zinc", "Niacin (B3 — chromium works as chromodulin with niacin)"],
+    notes: "Chromium picolinate is the most researched supplemental form. Evidence for supplementation is strongest in type 2 diabetes and insulin resistance.",
+    dose: "AI: 20–35 mcg/day."
+  },
+  {
+    symbol: "P", fullName: "Phosphorus", colorClass: "bg-blue", borderClass: "border-blue", textClass: "c-blue",
+    function: "Bone and tooth structure (with calcium), ATP (energy currency), cell membrane structure (phospholipids), DNA/RNA backbone, pH buffering, cellular signaling.",
+    deficiency: "Rare in modern diet. Weakness, bone pain, poor growth, impaired immune function. Hypophosphatemia occurs with malnutrition or refeeding syndrome.",
+    sources: ["🥩 Meat / Poultry / Fish", "🥛 Dairy", "🥚 Eggs", "🌰 Nuts and seeds", "🫘 Legumes", "🌾 Whole grains"],
+    codeps: ["Calcium (ratio matters — Ca:P should be ~1:1 to 2:1)", "Vitamin D (absorption)", "Magnesium"],
+    notes: "Most Westerners get excess phosphorus (from processed foods, phosphate additives). Too much phosphorus relative to calcium depletes calcium from bones. Many soft drinks are very high in phosphorus.",
+    dose: "RDA: 700 mg/day."
+  }
+];
+
+const chains = [
+  {
+    title: "The Bone Calcification Chain",
+    severity: "critical",
+    desc: "D3 supplementation without K2 and Magnesium",
+    nodes: [
+      { label: "D3 Taken", sub: "No K2, No Mg", color: "var(--gold)", borderColor: "rgba(212,168,67,0.5)" },
+      { label: "Calcium Absorbed ↑", sub: "Gut → Blood", color: "var(--blue)", borderColor: "rgba(74,144,217,0.5)" },
+      { label: "No K2 Active", sub: "MGP stays inactive", color: "var(--rose)", borderColor: "rgba(212,93,93,0.5)" },
+      { label: "Calcium in Arteries", sub: "Not in bone", color: "var(--rose)", borderColor: "rgba(212,93,93,0.5)" },
+      { label: "Calcification", sub: "Arterial plaques", color: "var(--rose)", borderColor: "rgba(212,93,93,0.7)" },
+    ],
+    missing: [
+      { nutrient: "K2 (MK-7)", consequence: "Calcium not directed to bones — deposits in arteries and kidneys instead" },
+      { nutrient: "Magnesium", consequence: "D3 cannot be converted to active calcitriol — calcium absorption fails to properly rise" },
+      { nutrient: "Both K2 + Mg", consequence: "D3 supplementation may be useless AND raise soft tissue calcification risk" },
+    ]
+  },
+  {
+    title: "The Methylation Collapse Chain",
+    severity: "critical",
+    desc: "B12 deficiency (common in vegans, elderly, PPI users)",
+    nodes: [
+      { label: "B12 Deficient", sub: "Vegan / PPI user", color: "var(--blue)", borderColor: "rgba(74,144,217,0.5)" },
+      { label: "Folate Trap", sub: "B9 unusable", color: "var(--rose)", borderColor: "rgba(212,93,93,0.5)" },
+      { label: "Methylation Fails", sub: "One-carbon cycle stalls", color: "var(--rose)", borderColor: "rgba(212,93,93,0.5)" },
+      { label: "Homocysteine ↑", sub: "Toxic buildup", color: "var(--amber)", borderColor: "rgba(224,123,42,0.5)" },
+      { label: "Nerve Damage", sub: "Dementia risk ↑", color: "var(--rose)", borderColor: "rgba(212,93,93,0.7)" },
+    ],
+    missing: [
+      { nutrient: "B12", consequence: "Folate cannot be activated — functional folate deficiency despite adequate intake" },
+      { nutrient: "B6", consequence: "Homocysteine cannot be cleared via transsulfuration pathway" },
+      { nutrient: "High-dose Folic Acid", consequence: "Masks B12 deficiency anemia — neurological damage progresses silently" },
+    ]
+  },
+  {
+    title: "The Iron Anemia Chain",
+    severity: "high",
+    desc: "Iron deficiency resistant to supplementation — the copper missing link",
+    nodes: [
+      { label: "Iron Taken", sub: "Supplement or food", color: "var(--rose)", borderColor: "rgba(212,93,93,0.5)" },
+      { label: "No Vitamin C", sub: "Poor gut absorption", color: "var(--amber)", borderColor: "rgba(224,123,42,0.5)" },
+      { label: "No Copper", sub: "Ceruloplasmin low", color: "var(--amber)", borderColor: "rgba(224,123,42,0.5)" },
+      { label: "Iron Trapped", sub: "Can't exit storage cells", color: "var(--rose)", borderColor: "rgba(212,93,93,0.5)" },
+      { label: "Anemia Persists", sub: "Despite high ferritin", color: "var(--rose)", borderColor: "rgba(212,93,93,0.7)" },
+    ],
+    missing: [
+      { nutrient: "Vitamin C", consequence: "Non-heme iron absorption drops dramatically (only 2–5% without C vs 20% with)" },
+      { nutrient: "Copper", consequence: "Iron cannot be exported from enterocytes or liver — 'functional iron deficiency' with high stores" },
+      { nutrient: "Vitamin A", consequence: "Iron mobilization from liver stores is impaired — anemia persists despite iron supplementation" },
+    ]
+  },
+  {
+    title: "The Thyroid Dysfunction Chain",
+    severity: "high",
+    desc: "Selenium deficiency with iodine supplementation",
+    nodes: [
+      { label: "Iodine Taken", sub: "High dose", color: "var(--teal)", borderColor: "rgba(45,212,191,0.5)" },
+      { label: "Selenium Low", sub: "Deiodinase ↓", color: "var(--rose)", borderColor: "rgba(212,93,93,0.5)" },
+      { label: "T4 Accumulates", sub: "T4→T3 conversion fails", color: "var(--amber)", borderColor: "rgba(224,123,42,0.5)" },
+      { label: "TPO Antibodies ↑", sub: "Autoimmune attack", color: "var(--rose)", borderColor: "rgba(212,93,93,0.5)" },
+      { label: "Hashimoto's Worsened", sub: "Thyroid destruction ↑", color: "var(--rose)", borderColor: "rgba(212,93,93,0.7)" },
+    ],
+    missing: [
+      { nutrient: "Selenium", consequence: "T4 cannot be converted to active T3 — hypothyroid symptoms persist despite normal T4" },
+      { nutrient: "Iron", consequence: "Thyroid peroxidase (TPO) cannot function — hormone synthesis impaired" },
+      { nutrient: "Zinc", consequence: "T3 cannot bind its nuclear receptor — hormone signaling is blocked at the cell level" },
+    ]
+  },
+  {
+    title: "The Potassium Repletion Failure",
+    severity: "moderate",
+    desc: "Potassium supplements that don't work — the magnesium block",
+    nodes: [
+      { label: "Low Potassium", sub: "Lab confirmed", color: "var(--green)", borderColor: "rgba(93,202,126,0.5)" },
+      { label: "Potassium Given", sub: "Supplements/diet", color: "var(--green)", borderColor: "rgba(93,202,126,0.5)" },
+      { label: "Mg Deficient", sub: "Na/K pump fails", color: "var(--purple)", borderColor: "rgba(139,92,246,0.5)" },
+      { label: "K⁺ Can't Enter Cells", sub: "Stays in blood", color: "var(--amber)", borderColor: "rgba(224,123,42,0.5)" },
+      { label: "Still Hypokalemic", sub: "Despite supplementing", color: "var(--rose)", borderColor: "rgba(212,93,93,0.7)" },
+    ],
+    missing: [
+      { nutrient: "Magnesium", consequence: "The Na⁺/K⁺-ATPase pump cannot transport potassium into cells without magnesium as cofactor" },
+      { nutrient: "Rule of thumb", consequence: "Always correct magnesium deficiency before or alongside potassium — especially in cardiac patients" },
+    ]
+  },
+  {
+    title: "The Zinc-Copper Depletion Loop",
+    severity: "high",
+    desc: "Long-term high-dose zinc supplementation without copper",
+    nodes: [
+      { label: "Zinc Taken", sub: "High dose, long-term", color: "var(--teal)", borderColor: "rgba(45,212,191,0.5)" },
+      { label: "Copper Blocked", sub: "Metallothionein binds Cu", color: "var(--amber)", borderColor: "rgba(224,123,42,0.5)" },
+      { label: "Ceruloplasmin ↓", sub: "Iron transport fails", color: "var(--rose)", borderColor: "rgba(212,93,93,0.5)" },
+      { label: "Dopamine → NE ↓", sub: "Norepinephrine low", color: "var(--purple)", borderColor: "rgba(139,92,246,0.5)" },
+      { label: "Neuropathy + Anemia", sub: "Mimics B12 deficiency", color: "var(--rose)", borderColor: "rgba(212,93,93,0.7)" },
+    ],
+    missing: [
+      { nutrient: "Copper", consequence: "Copper deficiency from zinc causes anemia, neuropathy, gait disturbances — often misdiagnosed" },
+      { nutrient: "Iron", consequence: "Secondarily depleted as ceruloplasmin (copper protein) needed to transport iron falls" },
+      { nutrient: "Safe ratio", consequence: "Zinc:Copper ratio of 8:1 to 10:1 should be maintained in all supplementation" },
+    ]
+  },
+  {
+    title: "The CRP / Hepcidin Iron Trap",
+    severity: "critical",
+    desc: "Supplementing iron during active inflammation — the hidden danger",
+    nodes: [
+      { label: "Inflammation Active", sub: "Infection / chronic illness", color: "var(--rose)", borderColor: "rgba(212,93,93,0.5)" },
+      { label: "CRP Elevated", sub: "Liver alarm signal", color: "var(--amber)", borderColor: "rgba(224,123,42,0.5)" },
+      { label: "Hepcidin Released", sub: "Iron-lock hormone", color: "var(--amber)", borderColor: "rgba(224,123,42,0.5)" },
+      { label: "Iron Sequestered", sub: "Trapped in stores", color: "var(--rose)", borderColor: "rgba(212,93,93,0.5)" },
+      { label: "Iron Supp. Fails", sub: "Feeds bacteria instead", color: "var(--rose)", borderColor: "rgba(212,93,93,0.7)" },
+    ],
+    missing: [
+      { nutrient: "CRP test (missed)", consequence: "Low serum iron during active CRP elevation is a defensive response — not true iron deficiency. Iron supplementation in this state is ineffective and may fuel bacterial growth (pathogens use iron)." },
+      { nutrient: "Protocol", consequence: "Always test CRP alongside Ferritin and Serum Iron. Treat the inflammation first, then retest iron markers before supplementing." },
+      { nutrient: "Ferritin can be falsely elevated", consequence: "Ferritin is also an acute-phase protein — it can appear high during inflammation even when true iron stores are low. CRP must be checked to correctly interpret ferritin." },
+    ]
+  },
+  {
+    title: "The Omega-3 Oxidation Chain",
+    severity: "moderate",
+    desc: "High-dose fish oil without Vitamin E — oxidative backfire",
+    nodes: [
+      { label: "High-Dose Fish Oil", sub: "3g+ EPA/DHA/day", color: "var(--blue)", borderColor: "rgba(74,144,217,0.5)" },
+      { label: "Vitamin E Low", sub: "Membrane antioxidant absent", color: "var(--rose)", borderColor: "rgba(212,93,93,0.5)" },
+      { label: "Lipid Peroxidation", sub: "Omega-3 oxidizes in cells", color: "var(--amber)", borderColor: "rgba(224,123,42,0.5)" },
+      { label: "Oxidative Stress ↑", sub: "4-HNE and MDA form", color: "var(--rose)", borderColor: "rgba(212,93,93,0.5)" },
+      { label: "Inflammation ↑", sub: "Opposite of intended", color: "var(--rose)", borderColor: "rgba(212,93,93,0.7)" },
+    ],
+    missing: [
+      { nutrient: "Vitamin E", consequence: "Fish oil is a highly unsaturated fat — the most oxidation-prone fat in the body. Vitamin E in cell membranes is the primary defense against this peroxidation." },
+      { nutrient: "Storage", consequence: "Rancid fish oil smells fishy and causes oxidative harm. Refrigerate all omega-3 capsules. Buy products with added mixed tocopherols." },
+      { nutrient: "CoQ10 (supportive)", consequence: "CoQ10 provides additional antioxidant protection in mitochondrial membranes alongside Vitamin E when supplementing omega-3." },
+    ]
+  },
+];
+
+const sourcesData = [
+  {
+    category: "Fat-Soluble Vitamins", icon: "🌿",
+    items: [
+      { name: "Vitamin A (Retinol)", emoji: "🥩☀️", topSources: "Beef liver, cod liver oil, butter (grass-fed), egg yolks", plantSources: "Sweet potato, carrot, kale (beta-carotene — conversion varies)", notes: "Animal retinol is directly bioavailable. Plant beta-carotene requires conversion — impaired in ~45% of people." },
+      { name: "Vitamin D3", emoji: "☀️🐟", topSources: "Sunlight (UVB), cod liver oil, salmon, mackerel, sardines", plantSources: "UV-exposed mushrooms (D2, less effective)", notes: "Skin synthesis is most efficient. Supplement D3 (cholecalciferol), not D2, for best blood level response." },
+      { name: "Vitamin E", emoji: "🌻🌰", topSources: "Wheat germ oil, sunflower seeds, almonds, hazelnuts", plantSources: "Spinach, broccoli, avocado, olive oil", notes: "Natural d-alpha-tocopherol has double the activity of synthetic dl-alpha. Mixed tocopherols are ideal." },
+      { name: "Vitamin K2 (MK-7)", emoji: "🫘🧀", topSources: "Natto (highest), gouda/brie cheese, goose liver, egg yolks", plantSources: "K1 from leafy greens — but K1 ≠ K2 (different functions)", notes: "MK-7 has a 72-hour half-life vs MK-4's 1-hour — once-daily dosing sufficient for MK-7." },
+    ]
+  },
+  {
+    category: "Water-Soluble B Vitamins", icon: "🧬",
+    items: [
+      { name: "B1 (Thiamine)", emoji: "🐷🌾", topSources: "Pork, sunflower seeds, trout, mussels, black beans", plantSources: "Whole grains, asparagus, acorn squash", notes: "Destroyed by heat and sulfites. Raw fish contains thiaminase (destroys B1). Alcohol dramatically depletes." },
+      { name: "B2 (Riboflavin)", emoji: "🥩🥛", topSources: "Beef liver, kidney, milk, cheese, almonds", plantSources: "Spinach, almonds, edamame, quinoa", notes: "Light-sensitive — milk in clear containers loses riboflavin. Key for MTHFR enzyme and glutathione recycling." },
+      { name: "B3 (Niacin)", emoji: "🐟🥜", topSources: "Tuna, chicken, turkey, beef liver, peanuts", plantSources: "Avocado, mushrooms, brown rice, peanut butter", notes: "Niacinamide form doesn't cause flushing. Tryptophan is a precursor (60 mg Trp = ~1 mg niacin)." },
+      { name: "B6 (Pyridoxine)", emoji: "🐟🍌", topSources: "Tuna, salmon, chicken, beef liver, beef", plantSources: "Banana, potato, avocado, chickpeas, pistachios", notes: "P5P (active form) best for those with liver issues or MTHFR. High-dose pyridoxine (not P5P) causes neuropathy." },
+      { name: "B9 (Folate)", emoji: "🥬🫘", topSources: "Beef liver, oysters (small amounts)", plantSources: "Spinach, romaine, lentils, asparagus, avocado, broccoli", notes: "Choose 5-MTHF (methylfolate) over folic acid. Folate is heat-sensitive — raw greens superior." },
+      { name: "B12 (Cobalamin)", emoji: "🦀🐟", topSources: "Clams, beef liver, sardines, mackerel, beef, lamb", plantSources: "Nutritional yeast (fortified), tempeh (variable)", notes: "Almost exclusively in animal foods. Vegans must supplement. Methylcobalamin preferred. Needs Intrinsic Factor for absorption." },
+    ]
+  },
+  {
+    category: "Vitamin C", icon: "🍊",
+    items: [
+      { name: "Vitamin C", emoji: "🌶️🥝", topSources: "Red bell pepper (190 mg/100g), kiwi, guava, papaya, strawberries", plantSources: "All plant-based; broccoli, Brussels sprouts, tomatoes, oranges", notes: "Heat-sensitive — raw sources superior. Humans can't synthesize Vitamin C. Optimal dose 200–500 mg/day." },
+    ]
+  },
+  {
+    category: "Macro Minerals", icon: "⚡",
+    items: [
+      { name: "Calcium", emoji: "🥛🐟", topSources: "Dairy (milk, cheese, yogurt), canned sardines/salmon with bones", plantSources: "Kale, bok choy, almonds, white beans, fortified plant milks", notes: "Spinach calcium is poorly absorbed (oxalates). Kale calcium is highly bioavailable. Need D3 + K2 for proper use." },
+      { name: "Magnesium", emoji: "🥬🍫", topSources: "Pumpkin seeds, dark chocolate (70%+), Brazil nuts, halibut", plantSources: "Spinach, Swiss chard, black beans, avocado, banana", notes: "Many forms: glycinate (sleep), malate (energy), threonate (brain). Oxide form has poor absorption (~4%). Soil depletion means even 'good' diets may be low." },
+      { name: "Phosphorus", emoji: "🥩🥛", topSources: "Meat, poultry, fish, dairy, eggs", plantSources: "Legumes, whole grains, nuts", notes: "Excess phosphorus (from processed foods) can deplete calcium from bone. Maintain Ca:P ratio of ~1:1." },
+      { name: "Potassium", emoji: "🍌🥔", topSources: "White potato with skin, acorn squash, lentils, white beans", plantSources: "Banana, avocado, spinach, sweet potato, tomato paste", notes: "Cannot be effectively supplemented in large doses (FDA limits single supplement to 99 mg). Must come primarily from food." },
+      { name: "Sodium", emoji: "🧂🫙", topSources: "Salt, processed foods, cured meats, cheese", plantSources: "Seaweed, celery (naturally occurring)", notes: "Most diets have excess sodium. Na:K ratio matters — aim to increase potassium rather than restrict sodium alone." },
+    ]
+  },
+  {
+    category: "Trace Minerals", icon: "🔬",
+    items: [
+      { name: "Iron", emoji: "🥩🐚", topSources: "Clams, oysters, beef liver, beef, lamb (all heme iron — 15–35% absorption)", plantSources: "Lentils, spinach, pumpkin seeds, quinoa (non-heme — 2–20% absorption)", notes: "Take Vitamin C with non-heme iron to triple absorption. Avoid tea/coffee/calcium with iron meals. Test ferritin before supplementing." },
+      { name: "Zinc", emoji: "🐚🥩", topSources: "Oysters (highest density), beef, lamb, pumpkin seeds", plantSources: "Chickpeas, lentils, hemp seeds, cashews, quinoa", notes: "Phytates in plant foods reduce zinc absorption significantly. Vegetarians need 50% more dietary zinc than omnivores." },
+      { name: "Copper", emoji: "🐚🍫", topSources: "Oysters (highest), beef liver, crab, lobster", plantSources: "Sesame seeds/tahini, cashews, dark chocolate, spirulina, sunflower seeds", notes: "Often overlooked. Zinc supplements without copper cause copper deficiency. Maintain Zn:Cu ratio of ~8:1." },
+      { name: "Selenium", emoji: "🌰🐟", topSources: "Brazil nuts (1–2 nuts = daily dose), yellowfin tuna, halibut, shrimp", plantSources: "Whole grains (content depends on soil), sunflower seeds, oatmeal", notes: "Soil selenium varies hugely by region. Brazil nuts from Se-rich soils are an exceptionally efficient source." },
+      { name: "Iodine", emoji: "🌿🧂", topSources: "Seaweed (kelp, nori), cod, shrimp, canned tuna, dairy", plantSources: "Iodized salt (if used), potatoes with skin, prunes", notes: "Most reliable source is iodized salt (if used) or seaweed. Vegans avoiding iodized salt are at high deficiency risk." },
+      { name: "Manganese", emoji: "🍵🌾", topSources: "Tea (black/green is highest source), mussels, oysters", plantSources: "Whole grains, pineapple, pecans, hazelnuts, brown rice, chickpeas", notes: "Easy to get from plant foods. Competes with iron. Most people have adequate intake from whole grains alone." },
+    ]
+  }
+];
+
+const tipsData = [
+  {
+    icon: "🌅", title: "Morning Stack: D3 + K2 + Magnesium",
+    text: "Take D3, K2 (MK-7), and magnesium together with breakfast — ideally a meal containing fat (avocado, eggs, olive oil) to enhance absorption of all three fat-soluble compounds. This is the most impactful codependent trio for most people. <strong>Standard starting doses: D3 2,000–5,000 IU, K2 100–200 mcg MK-7, Magnesium 200–400 mg glycinate.</strong>"
+  },
+  {
+    icon: "🩸", title: "Iron With Vitamin C — Never With Calcium",
+    text: "Always take iron supplements or iron-rich foods with a Vitamin C source to maximize absorption. Take iron at least 2 hours away from calcium supplements, dairy, tea, coffee, and antacids — all significantly reduce iron absorption. <strong>Never take zinc and iron supplements simultaneously — take at least 2 hours apart.</strong>"
+  },
+  {
+    icon: "🧠", title: "B12: Test First, Then Form Matters",
+    text: "If supplementing B12, choose methylcobalamin or adenosylcobalamin — not cyanocobalamin. Sublingual or spray forms bypass the need for Intrinsic Factor. Vegans should test serum B12 annually. <strong>Never take high-dose folic acid without knowing your B12 status</strong> — it can mask deficiency while neurological damage continues."
+  },
+  {
+    icon: "🔁", title: "Zinc:Copper Ratio — The 8:1 Rule",
+    text: "For every 8–10 mg of supplemental zinc, take 1 mg of copper. This prevents zinc-induced copper deficiency. <strong>If taking zinc above 15 mg/day long-term without copper, you will develop copper deficiency</strong> — resulting in anemia, neuropathy, and impaired iron metabolism. Most multivitamins contain too little copper."
+  },
+  {
+    icon: "🦋", title: "Thyroid: Fix Selenium Before Loading Iodine",
+    text: "If addressing thyroid health, ensure selenium adequacy before significantly increasing iodine. High-dose iodine in a selenium-deficient state increases thyroid peroxidase antibodies and can worsen Hashimoto's. <strong>Selenium 100–200 mcg/day for 3 months before iodine loading is a common clinical approach.</strong>"
+  },
+  {
+    icon: "🌿", title: "Fat-Solubles Need Fat — Always",
+    text: "Vitamins A, D, E, and K require dietary fat for absorption. Taking them with a fat-free meal or drink wastes a significant portion of the dose. A minimum of 10–15g of fat (half an avocado, 2 eggs, a tablespoon of olive oil) per supplement meal dramatically improves uptake."
+  },
+  {
+    icon: "⏰", title: "Supplement Timing That Matters",
+    text: "<strong>Morning (with food + fat):</strong> D3, K2, Vitamin A, Vitamin E, fish oil, Vitamin C. <strong>Evening:</strong> Magnesium glycinate (promotes sleep and relaxation), Zinc (taken away from meals if tolerated). <strong>Away from all other supplements:</strong> Iron (take alone for best absorption). <strong>With B-vitamins:</strong> Avoid late-day B12/B6 — can disrupt sleep in some people."
+  },
+  {
+    icon: "🧪", title: "Test, Don't Guess — The Essential Labs",
+    text: "Before supplementing, test: <strong>Vitamin D (25-OH-D):</strong> aim for 40–60 ng/mL. <strong>Ferritin:</strong> check before taking iron. <strong>Serum B12 and homocysteine:</strong> homocysteine is often more sensitive. <strong>RBC Magnesium:</strong> more accurate than serum magnesium. <strong>Zinc and Copper:</strong> ratio matters as much as absolute values. <strong>Thyroid panel (TSH, free T3, free T4, TPO antibodies):</strong> to identify thyroid dysfunction."
+  },
+  {
+    icon: "🌱", title: "Plant-Based Diets: The Priority Supplements",
+    text: "Vegans and vegetarians face predictable gaps: <strong>B12</strong> (must supplement — no reliable plant sources). <strong>Vitamin D3</strong> (plant D2 is less effective). <strong>DHA/EPA</strong> (algae-based omega-3 is the vegan alternative to fish oil). <strong>Zinc</strong> (needs 50% higher intake due to phytates). <strong>Iodine</strong> (if avoiding iodized salt). <strong>Iron</strong> (non-heme only — always take with Vitamin C). <strong>Calcium</strong> (if avoiding dairy)."
+  },
+  {
+    icon: "💊", title: "Drug-Nutrient Interactions to Know",
+    text: "<strong>Statins</strong> deplete CoQ10 — supplement 100–200 mg/day with any statin. <strong>PPIs (antacids)</strong> reduce B12, magnesium, zinc, and calcium absorption. <strong>Metformin</strong> depletes B12. <strong>Warfarin</strong> is antagonized by Vitamin K — do not supplement K without medical supervision. <strong>Oral contraceptives</strong> deplete B6, B12, folate, zinc, magnesium, and Vitamin C."
+  },
+  {
+    icon: "🔬", title: "MTHFR Gene Variant — What Changes",
+    text: "~10–15% of people have a significant MTHFR variant (C677T/A1298C) impairing folate and B12 metabolism. For these individuals: <strong>Use 5-MTHF (methylfolate) instead of folic acid.</strong> Use methylcobalamin/adenosylcobalamin instead of cyanocobalamin. Ensure B2 (riboflavin) adequacy — it supports MTHFR enzyme function. Homocysteine testing reveals methylation efficiency."
+  },
+  {
+    icon: "📊", title: "Understanding Bioavailability — Form Is Everything",
+    text: "The form of supplement matters enormously. <strong>Magnesium:</strong> glycinate > malate > citrate >> oxide. <strong>Iron:</strong> bisglycinate > ferrous sulfate > ferric forms. <strong>Zinc:</strong> bisglycinate = picolinate > citrate >> oxide — always take with food to prevent nausea. <strong>Calcium:</strong> citrate (no acid needed) > carbonate (needs stomach acid). <strong>B12:</strong> methylcobalamin ≥ adenosylcobalamin > cyanocobalamin. <strong>Folate:</strong> 5-MTHF > folic acid. <strong>CoQ10:</strong> Ubiquinol > Ubiquinone (especially over age 40 or on statins)."
+  },
+  {
+    icon: "🌿", title: "Berberine — Nature's Metformin",
+    text: "<strong>Berberine (500mg, 2–3×/day with meals)</strong> activates AMPK — the same cellular energy sensor as Metformin — reducing hepatic glucose output and improving insulin sensitivity. Clinical trials show comparable HbA1c and fasting glucose reduction to Metformin 1500mg/day. It also reduces LDL and triglycerides by upregulating LDL receptors. <strong>Key codependencies:</strong> works synergistically with Magnesium and Chromium. Do not combine with Metformin without medical supervision — combined AMPK activation may cause hypoglycemia."
+  },
+  {
+    icon: "🩺", title: "Test CRP Before Supplementing Iron",
+    text: "<strong>This is a safety-critical rule:</strong> Never interpret low serum iron without checking CRP (C-Reactive Protein) simultaneously. Elevated CRP triggers Hepcidin release — a hormone that deliberately sequesters iron as a defence mechanism against infection. In this state, serum iron is low but iron stores are not truly depleted. Taking iron supplements during active inflammation is ineffective and may worsen outcomes by feeding pathogens. Also note: <strong>Ferritin is an acute-phase protein</strong> — it can appear falsely high during inflammation. CRP must contextualize all iron markers."
+  },
+  {
+    icon: "🐟", title: "Omega-3: Always Stack With Vitamin E",
+    text: "When supplementing fish oil (EPA/DHA) at doses above 1g/day, ensure adequate Vitamin E intake. Omega-3 polyunsaturated fats are highly susceptible to oxidation in cell membranes. Vitamin E (as mixed tocopherols) is the primary in-membrane antioxidant that prevents this. <strong>Practical rules:</strong> refrigerate all fish oil capsules; buy products with added tocopherols; take with food and fat. For vegans: algae-derived DHA+EPA bypasses the ALA conversion problem — plant ALA (flaxseed) converts to DHA at less than 5% efficiency in most adults."
+  },
+];
+
+// ===== RENDER FUNCTIONS =====
+
+function renderVitamins() {
+  const grid = document.getElementById('vitaminsGrid');
+  grid.innerHTML = vitamins.map(v => `
+    <div class="vitamin-card">
+      <div class="vitamin-card-header">
+        <div class="vitamin-symbol ${v.colorClass}" style="border:1px solid; border-color: var(--border2); ${v.textClass ? '' : ''}">
+          <span class="${v.textClass}" style="font-size:${v.symbol.length > 2 ? '14px' : '22px'}">${v.symbol}</span>
+        </div>
+        <div class="vitamin-info-meta">
+          <div class="vitamin-full-name">${v.fullName}</div>
+          <div class="vitamin-aka">${v.aka}</div>
+        </div>
+      </div>
+      <div class="vitamin-card-body">
+        <div class="vit-section-label">Function</div>
+        <div class="vit-function">${v.function}</div>
+
+        <div class="vit-section-label">Deficiency Signs</div>
+        <div class="vit-function" style="color:var(--rose2);font-size:13px">${v.deficiency}</div>
+
+        <div class="vit-section-label">Best Food Sources</div>
+        <div class="sources-list">
+          ${v.sources.map(s => `<span class="source-tag">${s}</span>`).join('')}
+        </div>
+
+        <div class="vit-section-label">Key Codependencies</div>
+        <div class="codeps-list">
+          ${v.codeps.map(c => `<span class="codep-badge ${v.colorClass} ${v.borderClass} ${v.textClass}">${c}</span>`).join('')}
+        </div>
+
+        <div class="dose-note ${v.borderClass}">${v.notes}</div>
+      </div>
+    </div>
+  `).join('');
+}
+
+function renderMinerals() {
+  const grid = document.getElementById('mineralsGrid');
+  grid.innerHTML = minerals.map(m => `
+    <div class="vitamin-card">
+      <div class="vitamin-card-header">
+        <div class="vitamin-symbol ${m.colorClass}" style="border:1px solid var(--border2)">
+          <span class="${m.textClass}" style="font-size:${m.symbol.length > 2 ? '14px' : '20px'};font-weight:700">${m.symbol}</span>
+        </div>
+        <div class="vitamin-info-meta">
+          <div class="vitamin-full-name">${m.fullName}</div>
+          <div class="vitamin-aka">Essential Mineral</div>
+        </div>
+      </div>
+      <div class="vitamin-card-body">
+        <div class="vit-section-label">Function</div>
+        <div class="vit-function">${m.function}</div>
+
+        <div class="vit-section-label">Deficiency Signs</div>
+        <div class="vit-function" style="color:var(--rose2);font-size:13px">${m.deficiency}</div>
+
+        <div class="vit-section-label">Best Food Sources</div>
+        <div class="sources-list">
+          ${m.sources.map(s => `<span class="source-tag">${s}</span>`).join('')}
+        </div>
+
+        <div class="vit-section-label">Key Codependencies</div>
+        <div class="codeps-list">
+          ${m.codeps.map(c => `<span class="codep-badge ${m.colorClass} ${m.borderClass} ${m.textClass}">${c}</span>`).join('')}
+        </div>
+
+        <div class="dose-note ${m.borderClass}">${m.notes}</div>
+      </div>
+    </div>
+  `).join('');
+}
+
+function renderChains() {
+  const list = document.getElementById('chainList');
+  list.innerHTML = chains.map(c => `
+    <div class="chain-card">
+      <div class="chain-header">
+        <div>
+          <div class="chain-title">${c.title}</div>
+          <div style="font-size:13px;color:var(--text3);margin-top:4px">${c.desc}</div>
+        </div>
+        <div class="chain-severity sev-${c.severity}">${c.severity}</div>
+      </div>
+      <div class="chain-flow">
+        ${c.nodes.map((node, i) => `
+          <div class="chain-node">
+            <div class="chain-node-bubble" style="background:${node.color}18;border-color:${node.borderColor};color:${node.color};font-size:10px;text-align:center;padding:4px">
+              ${node.label}
+            </div>
+            <div class="chain-node-label">${node.sub}</div>
+          </div>
+          ${i < c.nodes.length - 1 ? '<div class="chain-arrow">→</div>' : ''}
+        `).join('')}
+      </div>
+      <div class="chain-missing">
+        <div class="missing-label">What happens when each is missing</div>
+        <div class="missing-grid">
+          ${c.missing.map(m => `
+            <div class="missing-item">
+              <strong>Missing: ${m.nutrient}</strong>
+              ${m.consequence}
+            </div>
+          `).join('')}
+        </div>
+      </div>
+    </div>
+  `).join('');
+}
+
+function renderSources() {
+  const el = document.getElementById('sourcesContent');
+  el.innerHTML = sourcesData.map(cat => `
+    <div class="sources-section">
+      <div class="sources-category-title">${cat.icon} ${cat.category}</div>
+      <table class="sources-table">
+        <thead>
+          <tr>
+            <th>Nutrient</th>
+            <th>Top Animal Sources</th>
+            <th>Top Plant Sources</th>
+            <th>Important Notes</th>
+          </tr>
+        </thead>
+        <tbody>
+          ${cat.items.map(item => `
+            <tr>
+              <td>${item.name} <span class="food-icons">${item.emoji}</span></td>
+              <td>${item.topSources}</td>
+              <td>${item.plantSources}</td>
+              <td style="font-size:12.5px;color:var(--text3)">${item.notes}</td>
+            </tr>
+          `).join('')}
+        </tbody>
+      </table>
+    </div>
+  `).join('');
+}
+
+function renderLabTests() {
+  const el = document.getElementById('labTestsContent');
+  if (el.dataset.rendered) return;
+  el.dataset.rendered = '1';
+
+  // --- Individual Tests ---
+  const indHtml = individualTests.map(cat => `
+    <div class="lab-cat-block">
+      <div class="lab-cat-title">${cat.category}</div>
+      <div class="ind-tests-grid">
+        ${cat.tests.map(t => `
+          <div class="ind-test-card">
+            <div class="ind-test-header">
+              <div class="ind-test-name">${t.name}</div>
+              <div class="ind-test-aka">${t.aka}</div>
+            </div>
+            <div class="ind-test-body">
+              <div class="ind-row">
+                <span class="ind-label">Measures</span>
+                <span class="ind-val">${t.measures}</span>
+              </div>
+              <div class="ind-row">
+                <span class="ind-label">Optimal Range</span>
+                <span class="ind-val" style="color:var(--accent2)">${t.optimal}</span>
+              </div>
+              <div class="ind-row">
+                <span class="ind-label">Fasting?</span>
+                <span class="ind-val">
+                  <span class="fasting-badge ${t.fasting === 'No' ? 'fasting-no' : 'fasting-yes'}">${t.fasting === 'No' ? 'Not required' : 'Required: ' + t.fasting}</span>
+                </span>
+              </div>
+              <div class="ind-row">
+                <span class="ind-label">Why It Matters</span>
+                <span class="ind-val">${t.importance}</span>
+              </div>
+              <div class="ind-row">
+                <span class="ind-label">Approx. Cost</span>
+                <span class="ind-val price-val">${t.price}</span>
+              </div>
+              <div class="ind-labs">
+                <span class="ind-label">Book At</span>
+                <div class="ind-lab-links">
+                  ${t.labs.map(l => `<a href="${l.url}" target="_blank" rel="noopener" class="lab-link">${l.name} ↗</a>`).join('')}
+                </div>
+              </div>
+            </div>
+          </div>
+        `).join('')}
+      </div>
+    </div>
+  `).join('');
+
+  // --- Packages ---
+  const pkgHtml = labPackages.map(lab => `
+    <div class="lab-block">
+      <div class="lab-block-header">
+        <span class="lab-logo">${lab.logo}</span>
+        <div>
+          <div class="lab-block-name">${lab.lab}</div>
+          <div class="lab-block-tag">${lab.tagline}</div>
+        </div>
+      </div>
+      <div class="pkg-grid">
+        ${lab.packages.map(p => `
+          <div class="pkg-card ${p.highlight ? 'pkg-highlight' : ''}">
+            ${p.highlight ? '<div class="pkg-best-badge">⭐ Best Value</div>' : ''}
+            <div class="pkg-name">${p.name}</div>
+            <div class="pkg-tests-count">${p.tests} Parameters</div>
+            <div class="pkg-includes-label">Includes</div>
+            <div class="pkg-includes">${p.includes}</div>
+            <div class="pkg-best-for-label">Best for</div>
+            <div class="pkg-best-for">${p.bestFor}</div>
+            <div class="pkg-footer">
+              <div class="pkg-price">${p.price}</div>
+              <a href="${p.url}" target="_blank" rel="noopener" class="pkg-btn">Book Now ↗</a>
+            </div>
+          </div>
+        `).join('')}
+      </div>
+    </div>
+  `).join('');
+
+  // --- Protocols ---
+  const protoHtml = testingProtocol.map(p => `
+    <div class="proto-card">
+      <div class="proto-icon">${p.icon}</div>
+      <div class="proto-title">${p.title}</div>
+      <div class="proto-desc">${p.desc}</div>
+      <ul class="proto-tests">
+        ${p.tests.map(t => `<li>${t}</li>`).join('')}
+      </ul>
+      <div class="proto-cost">${p.cost}</div>
+    </div>
+  `).join('');
+
+  el.innerHTML = `
+    <div class="labs-notice">
+      <span>💡</span>
+      <span>Prices shown are approximate and vary by city. All labs listed are NABL-accredited and offer <strong>free home sample collection</strong>. Prices are lowest in Tier-2/3 cities. Book directly from lab websites for best rates — avoid third-party aggregator markups where possible.</span>
+    </div>
+
+    <div class="labs-notice" style="border-color:rgba(212,93,93,0.25);background:rgba(212,93,93,0.05)">
+      <span>⚠️</span>
+      <span>Links to lab websites are correct as of 2025 but may change. If a link doesn't open the exact test, use the lab's search bar and search by test name. Always confirm prices at checkout — they vary by city.</span>
+    </div>
+
+    <div class="lt-section-title">🧪 Individual Tests — What to Order & Where</div>
+    ${indHtml}
+
+    <div class="lt-section-title" style="margin-top:48px">📦 Packages — Best Value Bundles</div>
+    <div class="pkg-notice">Packages are far more cost-effective than individual tests. If you are testing for the first time, start with a package that covers Vitamin D, B12, Iron Panel, Thyroid, and CBC — then add individual tests for specific concerns.</div>
+    ${pkgHtml}
+
+    <div class="lt-section-title" style="margin-top:48px">🎯 Recommended Testing Protocols by Concern</div>
+    <div class="proto-grid">${protoHtml}</div>
+
+    <div class="lt-section-title" style="margin-top:48px">📊 Lab Comparison at a Glance</div>
+    <div class="lab-compare-table-wrap">
+      <table class="lab-compare-table">
+        <thead>
+          <tr>
+            <th>Lab</th>
+            <th>Network</th>
+            <th>Home Collection</th>
+            <th>Report Time</th>
+            <th>Accreditation</th>
+            <th>Best For</th>
+            <th>Website</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><strong>Thyrocare</strong></td>
+            <td>3,000+ cities</td>
+            <td>✅ Free</td>
+            <td>24–48 hrs</td>
+            <td>NABL, CAP</td>
+            <td>Widest reach, best package value, automated processing</td>
+            <td><a href="https://www.thyrocare.com" target="_blank" class="lab-link">thyrocare.com ↗</a></td>
+          </tr>
+          <tr>
+            <td><strong>Dr Lal PathLabs</strong></td>
+            <td>200+ labs, 5,000+ collection points</td>
+            <td>✅ Free (30+ cities)</td>
+            <td>24–48 hrs</td>
+            <td>NABL, ISO</td>
+            <td>Most trusted brand, broadest test menu, rare tests available</td>
+            <td><a href="https://www.lalpathlabs.com" target="_blank" class="lab-link">lalpathlabs.com ↗</a></td>
+          </tr>
+          <tr>
+            <td><strong>Redcliffe Labs</strong></td>
+            <td>1,800+ cities</td>
+            <td>✅ Free</td>
+            <td>24–48 hrs</td>
+            <td>NABL</td>
+            <td>Very affordable, fast home collection, mobile app reports</td>
+            <td><a href="https://redcliffelabs.com" target="_blank" class="lab-link">redcliffelabs.com ↗</a></td>
+          </tr>
+          <tr>
+            <td><strong>Metropolis</strong></td>
+            <td>4,000+ collection centres</td>
+            <td>✅ Free (select cities)</td>
+            <td>24–72 hrs</td>
+            <td>NABL, CAP, ISO</td>
+            <td>Specialized/rare tests, niche hormone panels, research-grade accuracy</td>
+            <td><a href="https://www.metropolisindia.com" target="_blank" class="lab-link">metropolisindia.com ↗</a></td>
+          </tr>
+          <tr>
+            <td><strong>SRL Diagnostics</strong></td>
+            <td>400+ labs</td>
+            <td>✅ Free (select cities)</td>
+            <td>24–48 hrs</td>
+            <td>NABL, ISO</td>
+            <td>Rare trace minerals, niche vitamins (B6, Selenium), specialized panels</td>
+            <td><a href="https://www.srl.in" target="_blank" class="lab-link">srl.in ↗</a></td>
+          </tr>
+          <tr>
+            <td><strong>1mg Labs</strong></td>
+            <td>Pan-India (aggregator)</td>
+            <td>✅ Free</td>
+            <td>24–48 hrs</td>
+            <td>Partners with NABL labs</td>
+            <td>Easiest booking via app, compares lab prices near you</td>
+            <td><a href="https://www.1mg.com/lab-tests" target="_blank" class="lab-link">1mg.com/lab-tests ↗</a></td>
+          </tr>
+          <tr>
+            <td><strong>Apollo Diagnostics</strong></td>
+            <td>2,000+ centres</td>
+            <td>✅ Free (select cities)</td>
+            <td>24–48 hrs</td>
+            <td>NABL, ISO</td>
+            <td>Integrated with Apollo hospitals, good for follow-up with Apollo doctors</td>
+            <td><a href="https://apollodiagnostics.in" target="_blank" class="lab-link">apollodiagnostics.in ↗</a></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  `;
+}
+
+function renderTips() {
+  const grid = document.getElementById('tipsGrid');
+  grid.innerHTML = tipsData.map(t => `
+    <div class="tip-card">
+      <div class="tip-icon">${t.icon}</div>
+      <div class="tip-title">${t.title}</div>
+      <div class="tip-text">${t.text}</div>
+    </div>
+  `).join('');
+}
+
+// ===== LAB TESTS DATA =====
+
+const individualTests = [
+  {
+    category: "Fat-Soluble Vitamins",
+    tests: [
+      {
+        name: "Vitamin D (25-OH Total)",
+        aka: "25-Hydroxyvitamin D",
+        measures: "The main circulating form of Vitamin D — reflects both dietary intake and sun synthesis.",
+        optimal: "40–60 ng/mL (100–150 nmol/L). Deficient <20, Insufficient 20–29.",
+        fasting: "No",
+        importance: "Critical — the most commonly deficient nutrient in India. Low levels linked to bone loss, poor immunity, depression, diabetes risk.",
+        price: "₹700–₹1,400",
+        labs: [
+          { name: "Dr Lal PathLabs", url: "https://www.lalpathlabs.com/vitamin-d" },
+          { name: "Thyrocare", url: "https://www.thyrocare.com/test/vitamin-d" },
+          { name: "Redcliffe Labs", url: "https://redcliffelabs.com/vitamin-d-test" },
+          { name: "1mg Labs", url: "https://www.1mg.com/labs/test/vitamin-d-25-hydroxy-35018" },
+        ]
+      },
+      {
+        name: "Vitamin A (Retinol)",
+        aka: "Serum Retinol",
+        measures: "Active Vitamin A (retinol) in blood. Does NOT measure beta-carotene conversion.",
+        optimal: "30–80 mcg/dL (1.05–2.8 µmol/L).",
+        fasting: "Yes (8–10 hrs)",
+        importance: "Needed for vision, immunity, iron mobilization. Deficiency common in vegetarians.",
+        price: "₹900–₹1,800",
+        labs: [
+          { name: "Dr Lal PathLabs", url: "https://www.lalpathlabs.com/pathology-test/vitamin-a-retinol" },
+          { name: "Thyrocare", url: "https://www.thyrocare.com/test/vitamin-a" },
+          { name: "1mg Labs", url: "https://www.1mg.com/labs/test/vitamin-a-35021" },
+        ]
+      },
+      {
+        name: "Vitamin E (Alpha-Tocopherol)",
+        aka: "Serum Tocopherol",
+        measures: "Alpha-tocopherol concentration in serum.",
+        optimal: "5–20 mg/L (11.6–46.4 µmol/L).",
+        fasting: "Yes (8–10 hrs)",
+        importance: "Key antioxidant protecting cell membranes. Test if on fat-restricted diet or with fat malabsorption.",
+        price: "₹1,000–₹2,000",
+        labs: [
+          { name: "Dr Lal PathLabs", url: "https://www.lalpathlabs.com/pathology-test/vitamin-e" },
+          { name: "Thyrocare", url: "https://www.thyrocare.com/test/vitamin-e" },
+        ]
+      },
+      {
+        name: "Vitamin K (PIVKA-II)",
+        aka: "PIVKA-II / Serum Vitamin K",
+        measures: "PIVKA-II is the most sensitive functional marker of Vitamin K deficiency.",
+        optimal: "PIVKA-II <2.0 AU/mL. Serum K1: 0.2–3.2 ng/mL.",
+        fasting: "Yes",
+        importance: "Rarely tested but important for those on warfarin, or with arterial calcification/poor bone density.",
+        price: "₹1,500–₹3,000",
+        labs: [
+          { name: "Dr Lal PathLabs", url: "https://www.lalpathlabs.com/pathology-test/vitamin-k" },
+          { name: "SRL Diagnostics", url: "https://www.srl.in" },
+        ]
+      },
+    ]
+  },
+  {
+    category: "B Vitamins & Methylation",
+    tests: [
+      {
+        name: "Vitamin B12 (Cobalamin)",
+        aka: "Serum Vitamin B12 / Cobalamin",
+        measures: "Total serum B12. Note: up to 20% of 'normal' results can still have functional deficiency — combine with MMA or homocysteine for accuracy.",
+        optimal: ">400 pg/mL for neurological protection. Labs flag <200 as deficient; many clinicians use >300 as functional threshold.",
+        fasting: "No",
+        importance: "Critical in India — very high prevalence of deficiency, especially vegetarians, elderly, and PPI users.",
+        price: "₹500–₹1,000",
+        labs: [
+          { name: "Dr Lal PathLabs", url: "https://www.lalpathlabs.com/pathology-test/vitamin-b-12" },
+          { name: "Thyrocare", url: "https://www.thyrocare.com/test/vitamin-b-12" },
+          { name: "Redcliffe Labs", url: "https://redcliffelabs.com/vitamin-b12-test" },
+          { name: "1mg Labs", url: "https://www.1mg.com/labs/test/vitamin-b12-35019" },
+        ]
+      },
+      {
+        name: "Folate / Folic Acid (B9)",
+        aka: "Serum Folate / RBC Folate",
+        measures: "Serum folate reflects recent intake. RBC folate reflects longer-term stores — more clinically meaningful.",
+        optimal: "Serum: 3–17 ng/mL. RBC folate: 140–628 ng/mL.",
+        fasting: "Yes (8 hrs)",
+        importance: "Critical during pregnancy (neural tube defects). Also key for MTHFR variant testing and methylation assessment.",
+        price: "₹500–₹900",
+        labs: [
+          { name: "Dr Lal PathLabs", url: "https://www.lalpathlabs.com/pathology-test/folic-acid" },
+          { name: "Thyrocare", url: "https://www.thyrocare.com/test/folic-acid" },
+          { name: "1mg Labs", url: "https://www.1mg.com/labs/test/folic-acid-35013" },
+        ]
+      },
+      {
+        name: "Homocysteine (Serum)",
+        aka: "Homocysteine Quantitative",
+        measures: "Amino acid produced when B12, B9, and B6 are inadequate. Elevated = methylation problem. Best combined functional marker for the B-vitamin trio.",
+        optimal: "<7 µmol/L (optimal). >15 is high-risk; >30 is severe.",
+        fasting: "Yes (8–12 hrs preferred)",
+        importance: "Elevated homocysteine predicts cardiovascular disease, dementia, stroke, and kidney disease better than cholesterol in many studies. Critical test.",
+        price: "₹700–₹1,200",
+        labs: [
+          { name: "Dr Lal PathLabs", url: "https://www.lalpathlabs.com/pathology-test/homocysteine-quantitative-serum" },
+          { name: "Thyrocare", url: "https://www.thyrocare.com/test/homocysteine" },
+          { name: "1mg Labs", url: "https://www.1mg.com/labs/test/homocysteine-35015" },
+          { name: "Redcliffe Labs", url: "https://redcliffelabs.com/homocysteine-test" },
+        ]
+      },
+      {
+        name: "Vitamin B6 (Pyridoxine)",
+        aka: "Plasma PLP / Pyridoxal-5-Phosphate",
+        measures: "Plasma PLP (active form) is the most accurate marker.",
+        optimal: ">30 nmol/L (plasma PLP).",
+        fasting: "Yes",
+        importance: "Required for serotonin, dopamine, GABA synthesis. Deficiency causes depression, PMS, anxiety, peripheral neuropathy.",
+        price: "₹900–₹1,800",
+        labs: [
+          { name: "Dr Lal PathLabs", url: "https://www.lalpathlabs.com/pathology-test/vitamin-b6" },
+          { name: "SRL Diagnostics", url: "https://www.srl.in" },
+        ]
+      },
+      {
+        name: "Vitamin C (Ascorbic Acid)",
+        aka: "Serum Ascorbic Acid",
+        measures: "Serum Vitamin C level.",
+        optimal: "0.4–2.0 mg/dL. Deficient <0.2 mg/dL.",
+        fasting: "Yes",
+        importance: "Rarely tested but subclinical deficiency is common in smokers, elderly, and those with poor fruit/vegetable intake.",
+        price: "₹800–₹1,500",
+        labs: [
+          { name: "Dr Lal PathLabs", url: "https://www.lalpathlabs.com/pathology-test/vitamin-c" },
+          { name: "SRL Diagnostics", url: "https://www.srl.in" },
+        ]
+      },
+    ]
+  },
+  {
+    category: "Key Minerals",
+    tests: [
+      {
+        name: "Serum Calcium",
+        aka: "Total Calcium / Ionized Calcium",
+        measures: "Total calcium in blood. Ionized (free) calcium is more functionally accurate.",
+        optimal: "Total: 8.5–10.2 mg/dL. Ionized: 4.6–5.3 mg/dL.",
+        fasting: "No",
+        importance: "Routine marker included in most health checks. Must always be evaluated alongside Vitamin D and PTH.",
+        price: "₹150–₹400",
+        labs: [
+          { name: "Dr Lal PathLabs", url: "https://www.lalpathlabs.com/pathology-test/calcium" },
+          { name: "Thyrocare", url: "https://www.thyrocare.com/test/calcium" },
+          { name: "1mg Labs", url: "https://www.1mg.com/labs/test/calcium-35006" },
+        ]
+      },
+      {
+        name: "Serum Magnesium",
+        aka: "Serum Magnesium",
+        measures: "Blood magnesium. Only ~1% of body magnesium is in blood — serum levels can be 'normal' even when cells are depleted. RBC magnesium is more accurate.",
+        optimal: "Serum: 1.7–2.2 mg/dL. RBC Mg: 4.2–6.8 mg/dL.",
+        fasting: "No",
+        importance: "Up to 50% of Indians are below optimal intake. Drives D3 activation, sleep quality, and blood pressure. Serum is often 'normal' even when depleted.",
+        price: "₹250–₹500 (serum) / ₹500–₹900 (RBC)",
+        labs: [
+          { name: "Dr Lal PathLabs", url: "https://www.lalpathlabs.com/pathology-test/magnesium-serum" },
+          { name: "Thyrocare", url: "https://www.thyrocare.com/test/magnesium" },
+          { name: "1mg Labs", url: "https://www.1mg.com/labs/test/magnesium-serum-35032" },
+        ]
+      },
+      {
+        name: "Iron Studies (Full Panel)",
+        aka: "Serum Iron + TIBC + Ferritin + Transferrin Saturation",
+        measures: "Full picture of iron stores and transport. Serum iron alone is insufficient — ferritin and transferrin saturation are essential.",
+        optimal: "Ferritin: 70–150 ng/mL (optimal). Transferrin saturation: 20–45%. Serum iron: 60–170 mcg/dL.",
+        fasting: "Yes (morning, before supplements)",
+        importance: "India has the highest burden of iron deficiency anemia globally. Ferritin is the single most important iron biomarker.",
+        price: "₹700–₹1,400 (full panel)",
+        labs: [
+          { name: "Dr Lal PathLabs", url: "https://www.lalpathlabs.com/pathology-test/iron-deficiency-profile" },
+          { name: "Thyrocare", url: "https://www.thyrocare.com/test/iron-deficiency-profile" },
+          { name: "1mg Labs", url: "https://www.1mg.com/labs/test/iron-deficiency-profile-35027" },
+          { name: "Redcliffe Labs", url: "https://redcliffelabs.com/iron-deficiency-profile" },
+        ]
+      },
+      {
+        name: "Serum Zinc",
+        aka: "Zinc, Serum",
+        measures: "Blood zinc level. Fasting morning sample essential as zinc drops after eating.",
+        optimal: "70–120 mcg/dL (fasting morning).",
+        fasting: "Yes (essential for accuracy)",
+        importance: "Zinc deficiency is widespread in India. Low zinc = impaired immunity, hair loss, poor wound healing, hypogonadism.",
+        price: "₹500–₹1,000",
+        labs: [
+          { name: "Dr Lal PathLabs", url: "https://www.lalpathlabs.com/pathology-test/zinc" },
+          { name: "Thyrocare", url: "https://www.thyrocare.com/test/zinc" },
+          { name: "1mg Labs", url: "https://www.1mg.com/labs/test/zinc-35044" },
+        ]
+      },
+      {
+        name: "Serum Copper",
+        aka: "Copper, Serum",
+        measures: "Blood copper. Also test ceruloplasmin to assess copper function.",
+        optimal: "Copper: 70–140 mcg/dL. Ceruloplasmin: 18–35 mg/dL.",
+        fasting: "No",
+        importance: "Often missed. Copper deficiency from long-term zinc supplementation mimics B12 deficiency — causes anemia and neuropathy.",
+        price: "₹700–₹1,500",
+        labs: [
+          { name: "Dr Lal PathLabs", url: "https://www.lalpathlabs.com/pathology-test/copper-serum" },
+          { name: "Thyrocare", url: "https://www.thyrocare.com/test/copper" },
+        ]
+      },
+      {
+        name: "Serum Selenium",
+        aka: "Selenium, Serum / Plasma",
+        measures: "Blood selenium level.",
+        optimal: "70–150 mcg/L (plasma).",
+        fasting: "No",
+        importance: "Critical for thyroid T4→T3 conversion and antioxidant defense. Indian soils are often selenium-poor.",
+        price: "₹1,200–₹2,500",
+        labs: [
+          { name: "Dr Lal PathLabs", url: "https://www.lalpathlabs.com/pathology-test/selenium" },
+          { name: "Thyrocare", url: "https://www.thyrocare.com/test/selenium" },
+          { name: "SRL Diagnostics", url: "https://www.srl.in" },
+        ]
+      },
+      {
+        name: "Urinary Iodine / Serum Iodine",
+        aka: "Urinary Iodine Excretion (UIE)",
+        measures: "Urinary iodine is the gold standard for population assessment. Serum iodine reflects recent intake.",
+        optimal: "UIE: 100–200 mcg/L (median). Deficient <100 mcg/L.",
+        fasting: "No (urine spot sample)",
+        importance: "Iodine deficiency remains a concern in inland/hill regions of India. Critical for thyroid function and fetal brain development.",
+        price: "₹600–₹1,200",
+        labs: [
+          { name: "Dr Lal PathLabs", url: "https://www.lalpathlabs.com/pathology-test/iodine-urine" },
+          { name: "SRL Diagnostics", url: "https://www.srl.in" },
+          { name: "Metropolis", url: "https://www.metropolisindia.com" },
+        ]
+      },
+      {
+        name: "Serum Potassium",
+        aka: "Potassium, Serum (Electrolytes)",
+        measures: "Blood potassium. Always check alongside sodium and magnesium.",
+        optimal: "3.5–5.0 mEq/L. Symptoms occur below 3.0.",
+        fasting: "No",
+        importance: "Hypokalemia resistant to supplementation is almost always caused by concurrent magnesium deficiency. Always test Mg with K.",
+        price: "₹100–₹300 (often part of electrolytes panel)",
+        labs: [
+          { name: "Dr Lal PathLabs", url: "https://www.lalpathlabs.com/pathology-test/electrolytes" },
+          { name: "Thyrocare", url: "https://www.thyrocare.com/test/serum-electrolytes" },
+          { name: "1mg Labs", url: "https://www.1mg.com/labs/test/electrolytes-serum-35010" },
+        ]
+      },
+    ]
+  },
+  {
+    category: "Inflammation Markers",
+    tests: [
+      {
+        name: "hsCRP (High-Sensitivity CRP)",
+        aka: "C-Reactive Protein, high sensitivity",
+        measures: "Systemic inflammation level. Must be tested alongside iron markers — elevated CRP means low serum iron may be Hepcidin-driven, not true deficiency.",
+        optimal: "<1.0 mg/L (optimal cardiovascular risk). <0.5 mg/L (ideal). >3.0 mg/L = high risk.",
+        fasting: "No (but avoid testing during acute illness — wait 2 weeks after infection)",
+        importance: "Critical safety test before starting iron supplementation. Also a cardiovascular risk marker and a signal to evaluate D3, Magnesium, and Omega-3.",
+        price: "₹400–₹900",
+        labs: [
+          { name: "Dr Lal PathLabs", url: "https://www.lalpathlabs.com/pathology-test/crp-high-sensitivity" },
+          { name: "Thyrocare", url: "https://www.thyrocare.com/test/crp-hs" },
+          { name: "Redcliffe Labs", url: "https://redcliffelabs.com/crp-hs-test" },
+          { name: "1mg Labs", url: "https://www.1mg.com/labs/test/crp-high-sensitivity-35008" },
+        ]
+      },
+      {
+        name: "ESR (Erythrocyte Sedimentation Rate)",
+        aka: "Westergren ESR",
+        measures: "A non-specific marker of inflammation — less precise than CRP but cheap and widely available.",
+        optimal: "Men: <15 mm/hr. Women: <20 mm/hr.",
+        fasting: "No",
+        importance: "Useful as a basic inflammation screen. Elevated ESR + normal CRP suggests chronic low-grade issue. Both elevated = more acute inflammation.",
+        price: "₹100–₹250",
+        labs: [
+          { name: "Dr Lal PathLabs", url: "https://www.lalpathlabs.com/pathology-test/esr" },
+          { name: "Thyrocare", url: "https://www.thyrocare.com/test/esr" },
+          { name: "1mg Labs", url: "https://www.1mg.com/labs/test/esr-35011" },
+        ]
+      },
+    ]
+  },
+  {
+    category: "Blood Sugar & Insulin",
+    tests: [
+      {
+        name: "Fasting Glucose + HbA1c",
+        aka: "Blood Glucose Fasting / Glycated Haemoglobin",
+        measures: "Fasting glucose = snapshot of current blood sugar. HbA1c = 3-month average blood sugar — the gold standard for diabetes diagnosis and monitoring.",
+        optimal: "Fasting glucose: 70–85 mg/dL (optimal), <100 normal. HbA1c: <5.4% optimal, <5.7% normal.",
+        fasting: "Yes (8–12 hrs for fasting glucose)",
+        importance: "Essential baseline for everyone. Connects directly to Magnesium deficiency — low Mg impairs insulin receptor signaling. Part of the Blood Sugar / Insulin cluster.",
+        price: "₹200–₹500",
+        labs: [
+          { name: "Dr Lal PathLabs", url: "https://www.lalpathlabs.com/pathology-test/hba1c" },
+          { name: "Thyrocare", url: "https://www.thyrocare.com/test/hba1c" },
+          { name: "Redcliffe Labs", url: "https://redcliffelabs.com/hba1c-test" },
+          { name: "1mg Labs", url: "https://www.1mg.com/labs/test/hba1c-35016" },
+        ]
+      },
+      {
+        name: "Fasting Insulin + HOMA-IR",
+        aka: "Insulin, Fasting / Insulin Resistance Index",
+        measures: "Fasting insulin reveals insulin resistance years before blood glucose rises. HOMA-IR = (Fasting Glucose × Fasting Insulin) ÷ 405.",
+        optimal: "Fasting insulin: <5 µIU/mL (optimal), <10 normal. HOMA-IR: <1.5 (optimal), <2.5 normal. Values above this = insulin resistance.",
+        fasting: "Yes (10–12 hrs)",
+        importance: "The most sensitive early marker for insulin resistance and metabolic syndrome. Normal HbA1c and fasting glucose can coexist with significant insulin resistance — this test reveals it. Directly links to the Magnesium and Chromium cluster.",
+        price: "₹400–₹800",
+        labs: [
+          { name: "Dr Lal PathLabs", url: "https://www.lalpathlabs.com/pathology-test/insulin-fasting" },
+          { name: "Thyrocare", url: "https://www.thyrocare.com/test/insulin-fasting" },
+          { name: "1mg Labs", url: "https://www.1mg.com/labs/test/insulin-fasting-35025" },
+        ]
+      },
+    ]
+  },
+  {
+    category: "Lipid Panel",
+    tests: [
+      {
+        name: "Full Lipid Panel",
+        aka: "Total Cholesterol / LDL / HDL / Triglycerides / VLDL / LDL:HDL ratio",
+        measures: "Complete cardiovascular risk picture. Triglycerides directly indicate Omega-3 and carbohydrate metabolism status. Low HDL indicates Omega-3 and Niacin deficiency contexts.",
+        optimal: "Triglycerides: <100 mg/dL (optimal), <150 normal. HDL: >60 mg/dL. LDL: <100 mg/dL. LDL:HDL ratio: <2.5.",
+        fasting: "Yes (9–12 hrs)",
+        importance: "Bridges directly to supplement decisions: high Triglycerides → EPA/DHA; low HDL → Niacin + Omega-3; high LDL → Berberine, plant sterols. Statin use seen here → must add CoQ10.",
+        price: "₹400–₹900",
+        labs: [
+          { name: "Dr Lal PathLabs", url: "https://www.lalpathlabs.com/pathology-test/lipid-profile" },
+          { name: "Thyrocare", url: "https://www.thyrocare.com/test/lipid-profile" },
+          { name: "Redcliffe Labs", url: "https://redcliffelabs.com/lipid-profile-test" },
+          { name: "1mg Labs", url: "https://www.1mg.com/labs/test/lipid-profile-35029" },
+        ]
+      },
+    ]
+  },
+  {
+    category: "Thyroid & Proxy Markers",
+    tests: [
+      {
+        name: "Thyroid Full Panel",
+        aka: "TSH + Free T3 + Free T4 + Anti-TPO",
+        measures: "Complete thyroid assessment. TSH alone is insufficient — Free T3 and Free T4 reveal conversion and production issues separately.",
+        optimal: "TSH: 0.5–2.5 mIU/L (optimal). Free T3: 3.1–4.4 pg/mL. Free T4: 1.0–1.8 ng/dL. Anti-TPO: <35 IU/mL.",
+        fasting: "No (morning sample preferred)",
+        importance: "India has high rates of subclinical hypothyroidism and Hashimoto's. Selenium, iodine, iron, and zinc all affect this panel.",
+        price: "₹600–₹1,500",
+        labs: [
+          { name: "Dr Lal PathLabs", url: "https://www.lalpathlabs.com/pathology-test/thyroid-function-test" },
+          { name: "Thyrocare", url: "https://www.thyrocare.com/test/thyroid-profile-total" },
+          { name: "Redcliffe Labs", url: "https://redcliffelabs.com/thyroid-test" },
+          { name: "1mg Labs", url: "https://www.1mg.com/labs/test/thyroid-function-test-35041" },
+        ]
+      },
+      {
+        name: "Complete Blood Count (CBC/Hemogram)",
+        aka: "Full Blood Count / CBC with Differential",
+        measures: "RBC count, hemoglobin, MCV, MCH, WBC count, platelet count. Reveals anemia type — microcytic (iron) vs macrocytic (B12/folate).",
+        optimal: "Hb: 13.5–17.5 g/dL (men), 12–15.5 g/dL (women). MCV: 80–100 fL. Elevated MCV = B12/folate deficiency.",
+        fasting: "No",
+        importance: "The first-line screen for nutritional deficiency anemia. Essential baseline for anyone suspecting iron or B12 deficiency.",
+        price: "₹200–₹450",
+        labs: [
+          { name: "Dr Lal PathLabs", url: "https://www.lalpathlabs.com/pathology-test/complete-blood-count" },
+          { name: "Thyrocare", url: "https://www.thyrocare.com/test/cbc" },
+          { name: "Redcliffe Labs", url: "https://redcliffelabs.com/cbc-test" },
+          { name: "1mg Labs", url: "https://www.1mg.com/labs/test/complete-blood-count-35007" },
+        ]
+      },
+      {
+        name: "PTH (Parathyroid Hormone)",
+        aka: "Intact PTH / Parathyroid Hormone",
+        measures: "PTH is released when calcium is low. Elevated PTH with low/normal calcium points to Vitamin D deficiency driving the response.",
+        optimal: "10–65 pg/mL. High PTH + low D = secondary hyperparathyroidism from D deficiency.",
+        fasting: "Morning, fasting preferred",
+        importance: "Use alongside Vitamin D test to understand calcium/bone metabolism fully. Elevated PTH even with 'normal' D often means D is functionally insufficient.",
+        price: "₹700–₹1,400",
+        labs: [
+          { name: "Dr Lal PathLabs", url: "https://www.lalpathlabs.com/pathology-test/parathyroid-hormone-pth" },
+          { name: "Thyrocare", url: "https://www.thyrocare.com/test/parathyroid-hormone" },
+          { name: "1mg Labs", url: "https://www.1mg.com/labs/test/parathyroid-hormone-pth-35034" },
+        ]
+      },
+    ]
+  }
+];
+
+const labPackages = [
+  {
+    lab: "Thyrocare",
+    logo: "🔬",
+    tagline: "India's largest automated diagnostic chain — 3,000+ cities",
+    packages: [
+      {
+        name: "Vitamin B12 + Vitamin D Combo",
+        tests: 2,
+        includes: "Vitamin D (25-OH Total), Vitamin B12",
+        price: "₹859",
+        bestFor: "Quick check on India's two most common deficiencies",
+        url: "https://www.thyrocare.com",
+        highlight: false
+      },
+      {
+        name: "Complete Vitamins Profile",
+        tests: 14,
+        includes: "Vitamin A, D (Total, D2, D3), E, K, B1, B2, B3, B5, B6, B7, B9 (Folate), B12",
+        price: "₹2,299",
+        bestFor: "Complete vitamins-only assessment. No minerals included.",
+        url: "https://www.thyrocare.com/profile/complete%20vitamins%20profile",
+        highlight: false
+      },
+      {
+        name: "Vitamins & Minerals Profile",
+        tests: 22,
+        includes: "All vitamins + Calcium, Magnesium, Zinc, Selenium, Iron, Potassium, Sodium, Chloride",
+        price: "₹3,000",
+        bestFor: "Most complete single deficiency panel available in India",
+        url: "https://bookmytest.co.in/health-checkup-packages/vitamins-minerals-profile",
+        highlight: true
+      },
+      {
+        name: "Aarogyam Advanced (78 Tests)",
+        tests: 78,
+        includes: "CBC, Lipid, Liver, Kidney, Thyroid, Vitamin D, Vitamin B12, Iron Panel, Electrolytes, Cardiac risk markers",
+        price: "₹1,589",
+        bestFor: "Best value annual health check — covers most critical markers",
+        url: "https://www.thyrocare.com",
+        highlight: true
+      },
+      {
+        name: "Aarogyam C (103 Tests)",
+        tests: 103,
+        includes: "All of Advanced + 14 Vitamins, Homocysteine, Folate, Ferritin, Testosterone, Element toxicity (22 heavy metals)",
+        price: "₹2,299",
+        bestFor: "Comprehensive annual check including vitamins and toxicity screening",
+        url: "https://www.thyrocare.com",
+        highlight: false
+      },
+      {
+        name: "Aarogyam 1.5 (106 Tests)",
+        tests: 106,
+        includes: "All of C + Insulin Fasting, Cystatin C, Pancreas Profile, Bone disorders",
+        price: "₹3,199",
+        bestFor: "Most complete routine annual package — includes bone, metabolic, and vitamin markers",
+        url: "https://www.thyrocare.com/profile/aarogyam-1_5-with-utsh",
+        highlight: false
+      },
+    ]
+  },
+  {
+    lab: "Dr Lal PathLabs",
+    logo: "🏥",
+    tagline: "India's largest listed diagnostic chain — NABL accredited",
+    packages: [
+      {
+        name: "Vitamin D Comprehensive",
+        tests: 4,
+        includes: "Vitamin D Total (25-OH), Vitamin D2, Vitamin D3, Vitamin D Insufficiency/Deficiency assessment",
+        price: "₹2,210",
+        bestFor: "Detailed Vitamin D fractionation — D2 vs D3 split",
+        url: "https://www.lalpathlabs.com/pathology-test/vitamin-d-comprehensive",
+        highlight: false
+      },
+      {
+        name: "Swasthfit Vitamin Health Checkup",
+        tests: 16,
+        includes: "Vitamin D, B12, Folate, Iron Panel (Ferritin, TIBC, Iron), CBC, Calcium, Blood Sugar",
+        price: "₹1,800–₹2,500",
+        bestFor: "Practical deficiency-focused panel for most people",
+        url: "https://www.lalpathlabs.com/swasthfit",
+        highlight: true
+      },
+      {
+        name: "Swasthfit Super 2",
+        tests: "82+",
+        includes: "Full organ function (liver, kidney, thyroid), CBC, lipids, vitamins, minerals, diabetes, cardiac markers",
+        price: "₹2,500–₹3,500",
+        bestFor: "Comprehensive annual health check",
+        url: "https://www.lalpathlabs.com/swasthfit",
+        highlight: false
+      },
+    ]
+  },
+  {
+    lab: "Redcliffe Labs",
+    logo: "🧪",
+    tagline: "Home collection specialists — pan-India, doorstep service",
+    packages: [
+      {
+        name: "Vitamin Profile (D + B12)",
+        tests: 2,
+        includes: "25-OH Vitamin D, Vitamin B12",
+        price: "₹899",
+        bestFor: "Quick affordable starting point — free home collection",
+        url: "https://redcliffelabs.com/vitamin-d-vitamin-b12-test",
+        highlight: false
+      },
+      {
+        name: "Full Body Checkup with Vitamin D",
+        tests: "70+",
+        includes: "CBC, Liver, Kidney, Thyroid, Lipid, Diabetes, Vitamin D, Urine",
+        price: "₹1,499",
+        bestFor: "Best-value full body check with Vitamin D included",
+        url: "https://redcliffelabs.com/full-body-checkup",
+        highlight: true
+      },
+    ]
+  },
+  {
+    lab: "1mg Labs",
+    logo: "📱",
+    tagline: "Aggregator platform — books from NABL-certified labs near you",
+    packages: [
+      {
+        name: "Vitamin and Mineral Screening",
+        tests: "10+",
+        includes: "Vitamin D, B12, Iron, Calcium, Magnesium, CBC, Blood Sugar, Lipids",
+        price: "₹1,500–₹2,500",
+        bestFor: "Convenient booking — compares prices across nearby labs",
+        url: "https://www.1mg.com/labs/test/vitamin-and-mineral-screening-package-35014",
+        highlight: true
+      },
+    ]
+  }
+];
+
+const testingProtocol = [
+  {
+    icon: "🎯",
+    title: "The Essential Starter Panel",
+    desc: "If you've never tested before — these 6 tests cover 80% of common Indian deficiencies.",
+    tests: ["Vitamin D (25-OH)", "Vitamin B12", "Iron Panel (Ferritin + Serum Iron + TIBC)", "CBC / Hemogram", "Serum Magnesium", "Thyroid (TSH + Free T3 + Free T4)"],
+    cost: "Approx ₹2,500–₹4,000 (or use Thyrocare Aarogyam Advanced at ₹1,589 which covers most of these)"
+  },
+  {
+    icon: "🌱",
+    title: "Vegan / Vegetarian Panel",
+    desc: "Higher-risk profile — add these on top of the starter panel.",
+    tests: ["Vitamin B12 (critical)", "Folate (Serum)", "Homocysteine (functional B12/B9 marker)", "Serum Zinc", "Serum Calcium + PTH", "Urinary Iodine"],
+    cost: "Approx ₹3,500–₹6,000 additional"
+  },
+  {
+    icon: "🦋",
+    title: "Thyroid / Fatigue Panel",
+    desc: "For fatigue, hair loss, weight gain, cold intolerance.",
+    tests: ["TSH + Free T3 + Free T4 + Anti-TPO (full thyroid)", "Vitamin D", "Serum Ferritin", "Serum Selenium", "Urinary Iodine", "Serum Magnesium"],
+    cost: "Approx ₹3,000–₹5,000"
+  },
+  {
+    icon: "🧬",
+    title: "Methylation / Mood Panel",
+    desc: "For depression, anxiety, poor concentration, brain fog.",
+    tests: ["Homocysteine", "Vitamin B12", "Folate (Serum + RBC)", "Vitamin B6 (Plasma PLP)", "Serum Zinc", "Serum Magnesium"],
+    cost: "Approx ₹4,000–₹7,000"
+  },
+  {
+    icon: "🦴",
+    title: "Bone Health Panel",
+    desc: "For osteoporosis risk, calcium metabolism issues, fracture history.",
+    tests: ["Vitamin D (25-OH)", "PTH (Parathyroid Hormone)", "Serum Calcium (ionized)", "Serum Magnesium", "Vitamin K2 (PIVKA-II)", "Phosphorus"],
+    cost: "Approx ₹3,500–₹5,500"
+  },
+  {
+    icon: "🩸",
+    title: "Inflammation & Iron Safety Panel",
+    desc: "Before supplementing iron — or whenever CRP is suspected high.",
+    tests: ["hsCRP (high sensitivity)", "ESR", "Serum Ferritin", "Serum Iron + TIBC", "Transferrin Saturation", "CBC / Hemogram"],
+    cost: "Approx ₹1,500–₹2,500 — most annual health packages include these"
+  },
+  {
+    icon: "🍬",
+    title: "Insulin Resistance / Metabolic Panel",
+    desc: "For weight gain, fatigue, sugar cravings, PCOS, or family history of diabetes.",
+    tests: ["Fasting Glucose + HbA1c", "Fasting Insulin (calculate HOMA-IR)", "Full Lipid Panel (Triglycerides key)", "hsCRP", "Serum Magnesium", "Vitamin D (25-OH)"],
+    cost: "Approx ₹2,500–₹4,000 — Thyrocare Aarogyam Advanced covers most"
+  },
+];
+
+// ===== THEME TOGGLE =====
+function toggleTheme() {
+  const html = document.documentElement;
+  const isLight = html.classList.toggle('light');
+  const icon = document.querySelector('.theme-icon');
+  const label = document.getElementById('themeLabel');
+  if (icon) icon.textContent = isLight ? '☀️' : '🌙';
+  if (label) label.textContent = isLight ? 'Light' : 'Dark';
+  try { localStorage.setItem('nutrisync-theme', isLight ? 'light' : 'dark'); } catch(e){}
+}
+
+// Load saved theme
+(function() {
+  try {
+    const saved = localStorage.getItem('nutrisync-theme');
+    if (saved === 'light') {
+      document.documentElement.classList.add('light');
+      setTimeout(() => {
+        const icon = document.querySelector('.theme-icon');
+        const label = document.getElementById('themeLabel');
+        if (icon) icon.textContent = '☀️';
+        if (label) label.textContent = 'Light';
+      }, 100);
+    }
+  } catch(e) {}
+})();
+
+
+
+// ===== BOOKMARKS =====
+let bookmarks = [];
+try {
+  const saved = localStorage.getItem('nutrisync-bookmarks');
+  if (saved) bookmarks = JSON.parse(saved);
+} catch(e) {}
+
+function saveBookmarks() {
+  try { localStorage.setItem('nutrisync-bookmarks', JSON.stringify(bookmarks)); } catch(e) {}
+  updateFabCount();
+  renderBookmarksList();
+}
+
+function toggleBookmark(id, title, section, icon) {
+  const idx = bookmarks.findIndex(b => b.id === id);
+  if (idx > -1) {
+    bookmarks.splice(idx, 1);
+  } else {
+    bookmarks.push({ id, title, section, icon });
+  }
+  saveBookmarks();
+  const btn = document.querySelector(`[data-bookmark-id="${id}"]`);
+  if (btn) btn.classList.toggle('bookmarked', bookmarks.some(b => b.id === id));
+}
+
+function updateFabCount() {
+  const count = document.getElementById('fabCount');
+  if (!count) return;
+  count.textContent = bookmarks.length;
+  count.style.display = bookmarks.length > 0 ? 'flex' : 'none';
+}
+
+function toggleBookmarksPanel() {
+  const panel = document.getElementById('bookmarksPanel');
+  if (panel) panel.classList.toggle('open');
+  renderBookmarksList();
+}
+
+function renderBookmarksList() {
+  const list = document.getElementById('bookmarksList');
+  if (!list) return;
+  if (bookmarks.length === 0) {
+    list.innerHTML = '<div class="bookmarks-empty">No bookmarks yet.<br>Click 🔖 on any card to save it.</div>';
+    return;
+  }
+  list.innerHTML = '';
+  bookmarks.forEach((b, idx) => {
+    const item = document.createElement('div');
+    item.className = 'bookmark-item';
+    item.innerHTML = `
+      <div class="bookmark-item-icon">${b.icon || '📌'}</div>
+      <div>
+        <div class="bookmark-item-text">${b.title}</div>
+        <div class="bookmark-item-section">${b.section}</div>
+      </div>`;
+    item.onclick = () => goToBookmark(b.id, b.section);
+    list.appendChild(item);
+  });
+}
+
+function goToBookmark(id, section) {
+  const panel = document.getElementById('bookmarksPanel');
+  if (panel) panel.classList.remove('open');
+  const tabEl = document.querySelector('[data-section="' + section + '"]');
+  if (tabEl) tabEl.click();
+  setTimeout(() => {
+    const el = document.getElementById(id);
+    if (el) {
+      el.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      el.style.outline = '2px solid var(--accent)';
+      setTimeout(() => { el.style.outline = ''; }, 1500);
+    }
+  }, 400);
+}
+
+function clearBookmarks() {
+  bookmarks = [];
+  saveBookmarks();
+}
+
+updateFabCount();
+renderBookmarksList();
+
+// Add bookmark buttons to cards after render
+function addBookmarkButtons(containerSelector, sectionName, icon) {
+  document.querySelectorAll(containerSelector).forEach((card, i) => {
+    if (card.querySelector('.bookmark-btn')) return;
+    const title = card.querySelector('.cluster-name, .vitamin-full-name, .chain-title, .tip-title, .ind-test-name, .pkg-name')?.textContent?.trim() || 'Item ' + (i+1);
+    const id = 'bm-' + sectionName + '-' + i;
+    card.id = id;
+    const isBookmarked = bookmarks.some(b => b.id === id);
+    const btn = document.createElement('button');
+    btn.className = 'bookmark-btn' + (isBookmarked ? ' bookmarked' : '');
+    btn.setAttribute('data-bookmark-id', id);
+    btn.innerHTML = '🔖';
+    btn.title = 'Save to bookmarks';
+    btn.onclick = (e) => { e.stopPropagation(); toggleBookmark(id, title, sectionName, icon); };
+    card.style.position = 'relative';
+    card.appendChild(btn);
+  });
+}
+
+// ===== COLLAPSIBLE CLUSTER CARDS =====
+function initCollapsibleClusters() {
+  document.querySelectorAll('#clusters .cluster-card').forEach((card, i) => {
+    // Guard: skip if already initialized
+    if (card.dataset.collapsibleDone) return;
+    card.dataset.collapsibleDone = '1';
+
+    const header = card.querySelector('.cluster-header');
+    const body = card.querySelector('.cluster-body');
+    const defBox = card.querySelector('.deficiency-box');
+    if (!header || !body) return;
+
+    // Wrap collapsible content
+    const wrapper = document.createElement('div');
+    wrapper.className = 'cluster-collapsible';
+    card.insertBefore(wrapper, body);
+    wrapper.appendChild(body);
+    if (defBox) wrapper.appendChild(defBox);
+
+    // Add summary line (cluster tagline)
+    const tagline = card.querySelector('.cluster-tagline')?.textContent || '';
+    const summary = document.createElement('div');
+    summary.className = 'cluster-summary';
+    summary.textContent = tagline;
+    wrapper.after(summary);
+
+    // Add toggle button
+    const toggle = document.createElement('button');
+    toggle.className = 'cluster-toggle';
+    toggle.innerHTML = '▼';
+    toggle.title = 'Collapse';
+    header.appendChild(toggle);
+
+    // Collapse cards after first 3 by default
+    if (i >= 3) {
+      wrapper.classList.add('collapsed');
+      toggle.classList.add('collapsed');
+      toggle.title = 'Expand';
+    }
+
+    function doToggle(e) {
+      if (e) e.stopPropagation();
+      const collapsed = wrapper.classList.toggle('collapsed');
+      toggle.classList.toggle('collapsed', collapsed);
+      toggle.title = collapsed ? 'Expand' : 'Collapse';
+    }
+
+    toggle.addEventListener('click', doToggle);
+
+    // Header click toggles too — but ignore clicks on the toggle button itself
+    header.style.cursor = 'pointer';
+    header.addEventListener('click', (e) => {
+      if (e.target === toggle || toggle.contains(e.target)) return;
+      doToggle(null);
+    });
+  });
+}
+
+// ===== CITATIONS DATA =====
+const citationsData = [
+  {
+    category: "Vitamin D3, K2 & Calcium",
+    items: [
+      { claim: "Vitamin D3 increases calcium absorption from the gut by up to 20×", ref: "Heaney RP, et al. (2003). Calcium absorption varies within the reference range for serum 25-hydroxyvitamin D. JCEM.", url: "https://pubmed.ncbi.nlm.nih.gov/12574226/" },
+      { claim: "K2 activates Matrix GLA Protein (MGP) to prevent arterial calcification", ref: "Schurgers LJ, et al. (2007). Vitamin K-containing dietary supplements: comparison of synthetic vitamin K1 and natto-derived menaquinone-7. Blood.", url: "https://pubmed.ncbi.nlm.nih.gov/17138823/" },
+      { claim: "Magnesium is required to convert Vitamin D3 into active calcitriol", ref: "Uwitonze AM, Razzaque MS. (2018). Role of Magnesium in Vitamin D Activation and Function. JAOA.", url: "https://pubmed.ncbi.nlm.nih.gov/29480918/" },
+    ]
+  },
+  {
+    category: "B12, Folate & Methylation",
+    items: [
+      { claim: "B12 deficiency traps folate in unusable form (folate trap)", ref: "Shane B, Stokstad EL. (1985). Vitamin B12-folate interrelationships. Annu Rev Nutr.", url: "https://pubmed.ncbi.nlm.nih.gov/3896333/" },
+      { claim: "Elevated homocysteine from B12/B9/B6 deficiency predicts cardiovascular disease", ref: "Refsum H, et al. (2004). The Hordaland Homocysteine Study: a community-based study. Am J Clin Nutr.", url: "https://pubmed.ncbi.nlm.nih.gov/15113709/" },
+      { claim: "High-dose folic acid can mask B12 deficiency neurological damage", ref: "Reynolds E. (2006). Vitamin B12, folic acid, and the nervous system. Lancet Neurol.", url: "https://pubmed.ncbi.nlm.nih.gov/17052662/" },
+      { claim: "MTHFR C677T variant impairs folate metabolism — methylfolate preferred", ref: "Frosst P, et al. (1995). A candidate genetic risk factor for vascular disease: a common mutation in methylenetetrahydrofolate reductase. Nat Genet.", url: "https://pubmed.ncbi.nlm.nih.gov/7719998/" },
+    ]
+  },
+  {
+    category: "Iron, Copper & Inflammation",
+    items: [
+      { claim: "Vitamin C increases non-heme iron absorption by 2–4×", ref: "Hallberg L, Brune M, Rossander L. (1989). Iron absorption in man: ascorbic acid and dose-dependent inhibition by phytate. Am J Clin Nutr.", url: "https://pubmed.ncbi.nlm.nih.gov/2694476/" },
+      { claim: "Copper (ceruloplasmin) is essential for iron to exit storage cells", ref: "Harris ZL, et al. (1999). Aceruloplasminemia: molecular characterization of this disorder. Proc Natl Acad Sci.", url: "https://pubmed.ncbi.nlm.nih.gov/10077649/" },
+      { claim: "CRP elevates Hepcidin, causing functional iron sequestration during inflammation", ref: "Nemeth E, et al. (2004). Hepcidin regulates cellular iron efflux by binding to ferroportin and inducing its internalization. Science.", url: "https://pubmed.ncbi.nlm.nih.gov/15514116/" },
+      { claim: "High-dose zinc supplementation depletes copper causing neuropathy", ref: "Prodan CI, et al. (2006). Copper deficiency after gastric surgery. J Neurol Neurosurg Psychiatry.", url: "https://pubmed.ncbi.nlm.nih.gov/16107359/" },
+    ]
+  },
+  {
+    category: "Thyroid, Selenium & Iodine",
+    items: [
+      { claim: "Selenium (deiodinase) is required to convert T4 to active T3", ref: "Bianco AC, et al. (2019). American Thyroid Association guide to investigating thyroid hormone economy and action. Thyroid.", url: "https://pubmed.ncbi.nlm.nih.gov/30900491/" },
+      { claim: "High-dose iodine without selenium increases TPO antibodies in Hashimoto's", ref: "Toulis KA, et al. (2010). Selenium supplementation in the treatment of Hashimoto's thyroiditis: a systematic review. Thyroid.", url: "https://pubmed.ncbi.nlm.nih.gov/20883174/" },
+      { claim: "Low Vitamin D is associated with elevated Anti-TPO antibodies", ref: "Mazokopakis EE, et al. (2015). The relationship between serum 25(OH)D3 levels and thyroid autoantibodies. Exp Clin Endocrinol Diabetes.", url: "https://pubmed.ncbi.nlm.nih.gov/25014004/" },
+    ]
+  },
+  {
+    category: "Magnesium",
+    items: [
+      { claim: "Magnesium deficiency directly impairs insulin receptor tyrosine kinase activity", ref: "Barbagallo M, Dominguez LJ. (2007). Magnesium and type 2 diabetes. World J Diabetes.", url: "https://pubmed.ncbi.nlm.nih.gov/26101638/" },
+      { claim: "Potassium repletion resistant to correction often caused by Mg deficiency", ref: "Whang R, et al. (1992). Refractory potassium repletion: a consequence of magnesium deficiency. Arch Intern Med.", url: "https://pubmed.ncbi.nlm.nih.gov/1520042/" },
+    ]
+  },
+  {
+    category: "Omega-3 & Antioxidants",
+    items: [
+      { claim: "EPA + DHA reduces serum triglycerides by 20–50% at 2–4g/day", ref: "Skulas-Ray AC, et al. (2019). Omega-3 Fatty Acids for the Management of Hypertriglyceridemia: A Science Advisory From the AHA. Circulation.", url: "https://pubmed.ncbi.nlm.nih.gov/31422671/" },
+      { claim: "Vitamin C regenerates oxidized Vitamin E back to active form", ref: "Packer JE, Slater TF, Willson RL. (1979). Direct observation of a free radical interaction between vitamin E and vitamin C. Nature.", url: "https://pubmed.ncbi.nlm.nih.gov/502039/" },
+      { claim: "Statins block CoQ10 synthesis via mevalonate pathway", ref: "Littarru GP, Tiano L. (2007). Bioenergetic and antioxidant properties of coenzyme Q10. Mol Biotechnol.", url: "https://pubmed.ncbi.nlm.nih.gov/17914161/" },
+    ]
+  },
+  {
+    category: "Blood Sugar & Berberine",
+    items: [
+      { claim: "Berberine reduces HbA1c comparably to Metformin 1500mg/day", ref: "Yin J, Xing H, Ye J. (2008). Efficacy of berberine in patients with type 2 diabetes mellitus. Metabolism.", url: "https://pubmed.ncbi.nlm.nih.gov/18442638/" },
+      { claim: "Chromium supplementation improves insulin sensitivity in type 2 diabetes", ref: "Balk EM, et al. (2007). Effect of chromium supplementation on glucose metabolism and lipids: a systematic review. Diabetes Care.", url: "https://pubmed.ncbi.nlm.nih.gov/17327355/" },
+    ]
+  },
+];
+
+function openCitations() {
+  const overlay = document.getElementById('citationsOverlay');
+  const body = document.getElementById('citationsBody');
+  if (!overlay || !body) return;
+  body.innerHTML = citationsData.map(cat => `
+    <div class="cite-category">
+      <div class="cite-category-title">${cat.category}</div>
+      ${cat.items.map((item, i) => `
+        <div class="cite-item">
+          <div class="cite-number">${i+1}</div>
+          <div class="cite-content">
+            <div class="cite-claim">${item.claim}</div>
+            <div class="cite-ref">${item.ref}</div>
+            <a href="${item.url}" target="_blank" rel="noopener" class="cite-link">PubMed ↗</a>
+          </div>
+        </div>
+      `).join('')}
+    </div>
+  `).join('');
+  overlay.classList.add('open');
+}
+
+function closeCitations(e) {
+  if (e.target === document.getElementById('citationsOverlay')) {
+    document.getElementById('citationsOverlay').classList.remove('open');
+  }
+}
+
+function closeCitationsBtn() {
+  document.getElementById('citationsOverlay').classList.remove('open');
+}
+
+// ===== OVERRIDE showSection to add features =====
+function showSection(id) {
+  document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+  document.querySelectorAll('.nav-tab').forEach(t => t.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+  const tab = document.querySelector(`[data-section="${id}"]`);
+  if (tab) tab.classList.add('active');
+
+  if (id === 'vitamins' && !document.getElementById('vitaminsGrid').dataset.rendered) { renderVitamins(); document.getElementById('vitaminsGrid').dataset.rendered='1'; setTimeout(() => addBookmarkButtons('#vitaminsGrid .vitamin-card', 'Vitamins', '💊'), 150); }
+  if (id === 'minerals' && !document.getElementById('mineralsGrid').dataset.rendered) { renderMinerals(); document.getElementById('mineralsGrid').dataset.rendered='1'; setTimeout(() => addBookmarkButtons('#mineralsGrid .vitamin-card', 'Minerals', '⚡'), 150); }
+  if (id === 'chains' && !document.getElementById('chainList').dataset.rendered) { renderChains(); document.getElementById('chainList').dataset.rendered='1'; setTimeout(() => addBookmarkButtons('#chainList .chain-card', 'Chains', '⛓'), 150); }
+  if (id === 'sources' && !document.getElementById('sourcesContent').dataset.rendered) { renderSources(); document.getElementById('sourcesContent').dataset.rendered='1'; }
+  if (id === 'tips' && !document.getElementById('tipsGrid').dataset.rendered) { renderTips(); document.getElementById('tipsGrid').dataset.rendered='1'; setTimeout(() => addBookmarkButtons('#tipsGrid .tip-card', 'Tips', '💡'), 150); }
+  if (id === 'labtests') { const ltEl = document.getElementById('labTestsContent'); if (!ltEl.dataset.rendered) { renderLabTests(); ltEl.dataset.rendered = '1'; } }
+  if (id === 'clusters') { setTimeout(() => { initCollapsibleClusters(); addBookmarkButtons('#clusters .cluster-card', 'Clusters', '🔗'); }, 50); }
+
+}
+
+// Init clusters on page load since they're pre-rendered
+setTimeout(() => {
+  initCollapsibleClusters();
+  addBookmarkButtons('#clusters .cluster-card', 'Clusters', '🔗');
+}, 200);
+
+
+</script>
+</body>
+</html>
