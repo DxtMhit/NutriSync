@@ -1,0 +1,15 @@
+{
+  "name": "nutrisync",
+  "version": "1.0.0",
+  "description": "NutriSync - Symptom Analyzer and Blood Marker Tracker",
+  "scripts": {
+    "setup": "node scripts/setup.js",
+    "install:all": "node scripts/setup.js",
+    "dev": "node scripts/dev.js",
+    "build": "npm run build --prefix frontend",
+    "start": "node scripts/start.js"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC"
+}
