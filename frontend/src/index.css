@@ -1595,3 +1595,47 @@
     border: 1px dashed;
     color: var(--text3);
   }
+
+/* ===== PROFILE DROPDOWN ===== */
+.profile-dropdown {
+  position: relative;
+}
+.dropdown-menu {
+  position: absolute;
+  top: calc(100% + 10px);
+  right: 0;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 8px;
+  min-width: 160px;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+  z-index: 200;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+.dropdown-item {
+  background: transparent;
+  border: none;
+  padding: 10px 14px;
+  border-radius: 8px;
+  color: var(--text2);
+  font-family: 'DM Mono', monospace;
+  font-size: 13px;
+  text-align: left;
+  cursor: pointer;
+  transition: all 0.2s;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.dropdown-item:hover {
+  background: var(--surface2);
+  color: var(--text);
+}
+.dropdown-divider {
+  height: 1px;
+  background: var(--border);
+  margin: 4px 0;
+}
