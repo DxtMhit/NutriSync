@@ -18,6 +18,7 @@ import { supabase } from './supabaseClient';
 import AuthPortal from './components/AuthPortal';
 import DashboardSection from './components/DashboardSection';
 import SymptomChatbot from './components/SymptomChatbot';
+import DisclaimerModal from './components/DisclaimerModal';
 
 function App() {
   const [activeSection, setActiveSection] = useState(() => {
@@ -25,6 +26,7 @@ function App() {
   });
   const [citationsOpen, setCitationsOpen] = useState(false);
   const [session, setSession] = useState(null);
+  const [showDisclaimer, setShowDisclaimer] = useState(false);
 
   useEffect(() => {
     localStorage.setItem('nutrisync-section', activeSection);
@@ -34,15 +36,26 @@ function App() {
     // Check local active session
     supabase.auth.getSession().then(({ data: { session } }) => {
       setSession(session);
+      if (session && !sessionStorage.getItem('nutrisync-disclaimer-seen')) {
+        setShowDisclaimer(true);
+      }
     });
 
     // Listen for state sign-in/sign-out changes
     const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
       setSession(session);
+      if (session && !sessionStorage.getItem('nutrisync-disclaimer-seen')) {
+        setShowDisclaimer(true);
+      }
     });
 
     return () => subscription.unsubscribe();
   }, []);
+
+  const handleDisclaimerAccept = () => {
+    sessionStorage.setItem('nutrisync-disclaimer-seen', 'true');
+    setShowDisclaimer(false);
+  };
 
   return (
     <BookmarksProvider>
@@ -107,6 +120,15 @@ function App() {
       
       {/* Floating AI chatbot panel (rendered only when authenticated) */}
       {session && <SymptomChatbot />}
+
+      {/* Disclaimer Modal */}
+      {showDisclaimer && <DisclaimerModal onAccept={handleDisclaimerAccept} />}
+
+      {/* Footer */}
+      <footer style={{ textAlign: 'center', padding: '40px 20px', color: 'var(--text3)', fontFamily: 'DM Mono, monospace', fontSize: '13px' }}>
+        <div>Made with 💖 and ☕</div>
+        <div style={{ marginTop: '8px' }}>-MD</div>
+      </footer>
     </BookmarksProvider>
   );
 }

@@ -5,6 +5,17 @@ const Navbar = ({ activeSection, setActiveSection }) => {
   const [theme, setTheme] = useState('dark');
   const [menuOpen, setMenuOpen] = useState(false);
   const [session, setSession] = useState(null);
+  const [dropdownOpen, setDropdownOpen] = useState(false);
+
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (!event.target.closest('.profile-dropdown')) {
+        setDropdownOpen(false);
+      }
+    };
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => document.removeEventListener('mousedown', handleClickOutside);
+  }, []);
 
   useEffect(() => {
     const saved = localStorage.getItem('nutrisync-theme');
@@ -41,8 +52,7 @@ const Navbar = ({ activeSection, setActiveSection }) => {
     { id: 'chains', label: 'Deficiency Chains' },
     { id: 'sources', label: 'Food Sources' },
     { id: 'tips', label: 'Supplementing Smart' },
-    { id: 'labtests', label: '🇮🇳 Lab Tests' },
-    { id: 'dashboard', label: '👤 Dashboard' }
+    { id: 'labtests', label: '🇮🇳 Lab Tests' }
   ];
 
   return (
@@ -72,22 +82,50 @@ const Navbar = ({ activeSection, setActiveSection }) => {
         ))}
       </div>
       
-      <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
-        <div className="theme-toggle" onClick={toggleTheme}>
-          <span className="theme-icon">{theme === 'light' ? '☀️' : '🌙'}</span>
-          <span>{theme === 'light' ? 'Light' : 'Dark'}</span>
-        </div>
-        {session && (
-          <button
-            className="theme-toggle"
-            onClick={() => {
-              supabase.auth.signOut();
-              setActiveSection('overview');
-            }}
-            style={{ color: 'var(--rose)' }}
-          >
-            Sign Out
-          </button>
+      <div className="profile-dropdown" style={{ display: 'flex', alignItems: 'center', marginLeft: 'auto' }}>
+        <button
+          className="theme-toggle"
+          onClick={() => setDropdownOpen(!dropdownOpen)}
+          style={{ margin: 0 }}
+        >
+          <span>👤 Profile</span>
+        </button>
+
+        {dropdownOpen && (
+          <div className="dropdown-menu">
+            {session ? (
+              <>
+                <button 
+                  className="dropdown-item" 
+                  onClick={() => { setActiveSection('dashboard'); setDropdownOpen(false); }}
+                >
+                  Dashboard
+                </button>
+                <button 
+                  className="dropdown-item" 
+                  onClick={() => { supabase.auth.signOut(); setActiveSection('overview'); setDropdownOpen(false); }}
+                  style={{ color: 'var(--rose)' }}
+                >
+                  Sign Out
+                </button>
+              </>
+            ) : (
+              <button 
+                className="dropdown-item" 
+                onClick={() => { setActiveSection('dashboard'); setDropdownOpen(false); }}
+              >
+                Login
+              </button>
+            )}
+            <div className="dropdown-divider"></div>
+            <button 
+              className="dropdown-item" 
+              onClick={() => { toggleTheme(); setDropdownOpen(false); }}
+            >
+              <span className="theme-icon" style={{ fontSize: '14px' }}>{theme === 'light' ? '🌙' : '☀️'}</span>
+              <span>{theme === 'light' ? 'Dark Mode' : 'Light Mode'}</span>
+            </button>
+          </div>
         )}
       </div>
     </nav>
