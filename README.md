@@ -328,7 +328,37 @@ cd ..
 npm run dev
 ```
 
-</details>
+#### Start Servers Individually
+
+Use two terminals if you want to run the backend and frontend separately.
+
+**Terminal 1: Backend**
+
+```bash
+cd backend
+source venv/bin/activate
+uvicorn main:app --reload --host 127.0.0.1 --port 8000
+```
+this part 
+``` bash
+--host 127.0.0.1 --port 8000
+``` 
+Is not that relevant but as frontend listens to port 8000 at 127.0.0.1 so thats why we are explicitly giving it. 
+
+The backend runs at [http://127.0.0.1:8000](http://127.0.0.1:8000). You can check it with:
+
+```bash
+curl http://127.0.0.1:8000/
+```
+
+**Terminal 2: Frontend**
+
+```bash
+cd frontend
+npm run dev
+```
+
+The frontend usually runs at [http://localhost:5173](http://localhost:5173).
 
 #### After Starting
 
@@ -340,6 +370,8 @@ Once `npm run dev` is running, you should see:
 | **Backend** | [http://localhost:8000](http://localhost:8000) | FastAPI server |
 | **API Docs** | [http://localhost:8000/docs](http://localhost:8000/docs) | Auto-generated Swagger UI |
 
+
+</details>
 ---
 
 ## 📜 Available Scripts
