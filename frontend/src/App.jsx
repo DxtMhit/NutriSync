@@ -20,9 +20,15 @@ import DashboardSection from './components/DashboardSection';
 import SymptomChatbot from './components/SymptomChatbot';
 
 function App() {
-  const [activeSection, setActiveSection] = useState('overview');
+  const [activeSection, setActiveSection] = useState(() => {
+    return localStorage.getItem('nutrisync-section') || 'overview';
+  });
   const [citationsOpen, setCitationsOpen] = useState(false);
   const [session, setSession] = useState(null);
+
+  useEffect(() => {
+    localStorage.setItem('nutrisync-section', activeSection);
+  }, [activeSection]);
 
   useEffect(() => {
     // Check local active session

@@ -152,7 +152,7 @@ INSTRUCTIONS:
     # 3. Call Gemini
     try:
         model = genai.GenerativeModel(
-            model_name="gemini-1.5-flash",
+            model_name="gemini-2.5-flash",
             system_instruction=system_instruction
         )
         
@@ -202,7 +202,7 @@ If the document is invalid or no biomarkers are found, return an empty array [].
 """
 
     try:
-        model = genai.GenerativeModel("gemini-1.5-flash")
+        model = genai.GenerativeModel("gemini-2.5-flash")
         response = model.generate_content(
             [
                 {"mime_type": file.content_type, "data": file_bytes},
@@ -296,7 +296,7 @@ The HTML report must include:
 """
 
     try:
-        model = genai.GenerativeModel("gemini-1.5-flash")
+        model = genai.GenerativeModel("gemini-2.5-flash")
         response = model.generate_content(prompt)
         return {"report": response.text}
     except Exception as e:
